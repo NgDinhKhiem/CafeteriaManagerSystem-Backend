@@ -6,9 +6,12 @@ import com.cs3332.data.object.UserInformation;
 
 public interface AuthenticationSource {
     UserInformation getUserInformation(String username);
+    Response verifyUser(String username, String password);
     Response updateUserInformation(String username, UserInformation userInformation);
     Response availableUsername(String username);
     Response createUser(UserAuthInformation auth, UserInformation user);
     Response deleteUser(String username);
     Response updateUserPassword(String username, String oldPassword, String newPassword);
+    void save();
+    void load();
 }

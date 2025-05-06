@@ -1,4 +1,4 @@
-package com.cs3332.core.payload.object;
+package com.cs3332.core.payload.object.auth;
 
 import com.cs3332.core.payload.AbstractRequestBody;
 import lombok.AllArgsConstructor;

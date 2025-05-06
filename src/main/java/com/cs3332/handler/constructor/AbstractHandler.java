@@ -2,7 +2,9 @@ package com.cs3332.handler.constructor;
 
 import com.cs3332.Server;
 import com.cs3332.core.object.*;
+import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.utils.Logger;
+import com.cs3332.data.DataManager;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -16,11 +18,14 @@ import java.util.stream.Collectors;
 public abstract class AbstractHandler implements HttpHandler {
 
     protected final Server server;
+    protected final DataManager dataManager;
     protected final RequestMethod method;
+    private boolean requireToken = false;
 
     public AbstractHandler(Server server, RequestMethod method) {
         this.server = server;
         this.method = method;
+        this.dataManager = server.getDataManager();
     }
 
     @Override
@@ -33,6 +38,28 @@ public abstract class AbstractHandler implements HttpHandler {
 
         Map<String, String> queryParams = parseQueryParams(exchange.getRequestURI().getQuery());
         List<Field> paramFields = new ArrayList<>(List.of(this.getClass().getDeclaredFields()));
+        for (Field paramField : paramFields) {
+            if(paramField.getName().equalsIgnoreCase("TOKEN")){
+                requireToken = true;
+                paramField.setAccessible(true);
+                try {
+                    String token = exchange.getRequestHeaders().getFirst("Authorization");
+                    if(token==null){
+                        exchange.sendResponseHeaders(ResponseCode.BAD_REQUEST.getCode(),-1);
+                        return;
+                    }
+                    if(!dataManager.isValidToken(token)){
+                        Logger.debug("Token: {}",token);
+                        exchange.sendResponseHeaders(ResponseCode.UNAUTHORIZED.getCode(),-1);
+                        return;
+                    }
+                    paramField.set(this, token);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+                paramField.setAccessible(false);
+            }
+        }
         paramFields.removeIf(field -> !field.isAnnotationPresent(Param.class));
 
         Logger.info("Handling request for URI: {} with handler {}", exchange.getRequestURI(), this.getClass().getSimpleName());

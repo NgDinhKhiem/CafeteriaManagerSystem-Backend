@@ -17,6 +17,7 @@ public final class TypeHandler {
         adapters.put(Boolean.class, Boolean::valueOf);
         adapters.put(boolean.class, Boolean::valueOf);
         adapters.put(UUID.class, UUID::fromString);
+        adapters.put(Role.class, Role::valueOf);
     }
 
     @SuppressWarnings("unchecked")

@@ -1,0 +1,54 @@
+{
+  "authInformationHolder": {
+    "admin": {
+      "username": "admin",
+      "password": "password23"
+    },
+    "adma3in": {
+      "username": "adma3in",
+      "password": "password!"
+    },
+    "admain": {
+      "username": "admain",
+      "password": "password!"
+    }
+  },
+  "userInformationHolder": {
+    "admin": {
+      "username": "admin",
+      "name": "John Joe",
+      "email": "johndoe@example.com",
+      "phone": "+1234567890",
+      "dateOfBirth": 946684800000,
+      "gender": "male",
+      "roles": [
+        "ADMIN",
+        "MANAGER"
+      ]
+    },
+    "adma3in": {
+      "username": "adma3in",
+      "name": "John Doe",
+      "email": "johndoe@example.com",
+      "phone": "+1234567890",
+      "dateOfBirth": 946684800000,
+      "gender": "male",
+      "roles": [
+        "ADMIN",
+        "MANAGER"
+      ]
+    },
+    "admain": {
+      "username": "admain",
+      "name": "John Doe",
+      "email": "johndoe@example.com",
+      "phone": "+1234567890",
+      "dateOfBirth": 946684800000,
+      "gender": "male",
+      "roles": [
+        "ADMIN",
+        "MANAGER"
+      ]
+    }
+  }
+}

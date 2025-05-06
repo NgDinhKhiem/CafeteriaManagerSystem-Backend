@@ -1,19 +1,20 @@
 package com.cs3332.core.utils;
 
-import com.mrnatsu.luminexquirkscore.utils.Utils;
+import lombok.Getter;
 
 public class Response {
     private final boolean state;
+    @Getter
     private final String response;
 
     public Response(boolean state, String response) {
         this.state = state;
-        this.response = Utils.parse(response).getText();
+        this.response = response;
     }
 
     public Response(String response) {
         this.state = false;
-        this.response = Utils.parse(response).getText();
+        this.response = response;
     }
 
     public Response() {
@@ -23,10 +24,6 @@ public class Response {
 
     public boolean getState() {
         return this.state;
-    }
-
-    public String getResponse() {
-        return Utils.parse(this.response).getText();
     }
 
     public void on(boolean state, ResponseHandler responseHandler) {

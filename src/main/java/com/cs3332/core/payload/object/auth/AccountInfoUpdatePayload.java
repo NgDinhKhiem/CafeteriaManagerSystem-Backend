@@ -1,4 +1,4 @@
-package com.cs3332.core.payload.object;
+package com.cs3332.core.payload.object.auth;
 
 import com.cs3332.core.payload.AbstractRequestBody;
 import lombok.AllArgsConstructor;
@@ -8,9 +8,8 @@ import java.util.List;
 
 @AllArgsConstructor
 @Getter
-public class AccountCreationPayload extends AbstractRequestBody {
+public class AccountInfoUpdatePayload extends AbstractRequestBody {
     private final String username;
-    private final String password;
     private final String name;
     private final String email;
     private final String phone;

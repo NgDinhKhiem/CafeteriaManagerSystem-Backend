@@ -1,10 +1,11 @@
 package com.cs3332;
 
 import com.cs3332.data.DataManager;
-import com.cs3332.handler.LoginHandler;
+import com.cs3332.handler.authentication.*;
 import com.cs3332.handler.TestHandler;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import lombok.Getter;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -15,6 +16,7 @@ public class Server {
     private final int port;
     private final HttpServer server;
     private boolean isStarted = false;
+    @Getter
     private final DataManager dataManager = new DataManager(this);
     private final ExecutorService executorService = Executors.newCachedThreadPool();
 
@@ -27,6 +29,11 @@ public class Server {
     private void registerContexts(){
         registerHandler("/test", new TestHandler(this));
         registerHandler("/login", new LoginHandler(this));
+        registerHandler("/user_info", new UserInformationHandler(this));
+        registerHandler("/user_info_update", new UpdateInformationHandler(this));
+        registerHandler("/user_create", new RegisterHandler(this));
+        registerHandler("/user_delete", new DeleteUserHandler(this));
+        registerHandler("/user_password_update", new UpdatePasswordHandler(this));
     }
 
     private void registerHandler(String route, HttpHandler handler){
@@ -38,6 +45,7 @@ public class Server {
             return;
         server.start();
         System.out.println("Server started on port "+port);
+        this.dataManager.load();
         isStarted = true;
     }
 
