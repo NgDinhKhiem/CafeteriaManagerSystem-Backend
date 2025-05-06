@@ -2,17 +2,21 @@ package com.cs3332.data;
 
 import com.cs3332.Server;
 import com.cs3332.core.utils.Utils;
-import com.cs3332.data.database.DataSourceHandler;
+import com.cs3332.data.constructor.AuthenticationSource;
+import com.cs3332.data.database.authentication.SystemFileAuthenticationBase;
+import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class DataManager implements DataSourceHandler {
+public class DataManager{
     private final Server server;
     private final Map<String, String> sectionTokenHolder = new HashMap<>();
-    private DataSourceHandler dataSourceHandler;
+    @Getter
+    private final AuthenticationSource authenticationSource;
     public DataManager(Server server){
         this.server = server;
+        authenticationSource = new SystemFileAuthenticationBase();
     }
 
     public String createToken(String ID){
@@ -21,7 +25,7 @@ public class DataManager implements DataSourceHandler {
         return key;
     }
 
-    public boolean isValid(String ID, String token){
+    public boolean isValidToken(String ID, String token){
         if(!this.sectionTokenHolder.containsKey(ID))
             return false;
         return this.sectionTokenHolder.get(ID).equals(token);

@@ -1,6 +1,6 @@
-package com.cs3332.handler.constructor.body.object;
+package com.cs3332.core.payload.object;
 
-import com.cs3332.handler.constructor.body.AbstractRequestBody;
+import com.cs3332.core.payload.AbstractRequestBody;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

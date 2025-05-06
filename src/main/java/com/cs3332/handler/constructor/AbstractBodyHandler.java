@@ -4,31 +4,24 @@ import com.cs3332.Server;
 import com.cs3332.core.object.*;
 import com.cs3332.core.response.constructor.AbstractResponse;
 import com.cs3332.core.utils.Logger;
-import com.cs3332.handler.constructor.body.AbstractRequestBody;
+import com.cs3332.core.payload.AbstractRequestBody;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-public abstract class AbstractBodyHandler<T extends AbstractResponse, V extends AbstractRequestBody> extends AbstractHandler<T> {
+public abstract class AbstractBodyHandler<V extends AbstractRequestBody> extends AbstractHandler {
     private final Class<V> payloadClass;
     protected V payload;
 
     @SuppressWarnings("unchecked")
     public AbstractBodyHandler(Server server, RequestMethod method) {
         super(server, method);
-        this.payloadClass = (Class<V>) ((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[1];
+        this.payloadClass = (Class<V>) ((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
     @SuppressWarnings("unchecked")

@@ -5,11 +5,11 @@ import com.cs3332.core.response.constructor.AbstractResponse;
 import lombok.Getter;
 
 @Getter
-public class Response <T extends AbstractResponse>{
+public class ServerResponse {
     private final ResponseCode code;
-    private final T response;
+    private final AbstractResponse response;
 
-    public Response(ResponseCode code, T response) {
+    public ServerResponse(ResponseCode code, AbstractResponse response) {
         this.code = code;
         this.response = response;
     }

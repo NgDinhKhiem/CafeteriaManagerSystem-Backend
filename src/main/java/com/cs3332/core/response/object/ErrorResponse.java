@@ -6,6 +6,6 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class AccountInformation extends AbstractResponse {
-    private final String name;
+public class ErrorResponse extends AbstractResponse {
+    private final String error;
 }

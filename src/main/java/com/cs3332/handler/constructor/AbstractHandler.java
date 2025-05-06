@@ -2,7 +2,6 @@ package com.cs3332.handler.constructor;
 
 import com.cs3332.Server;
 import com.cs3332.core.object.*;
-import com.cs3332.core.response.constructor.AbstractResponse;
 import com.cs3332.core.utils.Logger;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -14,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class AbstractHandler<T extends AbstractResponse> implements HttpHandler {
+public abstract class AbstractHandler implements HttpHandler {
 
     protected final Server server;
     protected final RequestMethod method;
@@ -68,11 +67,11 @@ public abstract class AbstractHandler<T extends AbstractResponse> implements Htt
             }
         }
 
-        Response<T> response = resolve();
-        String responseBody = response.getResponse().toJSON();
+        ServerResponse serverResponse = resolve();
+        String responseBody = serverResponse.getResponse().toJSON();
         byte[] responseBytes = responseBody.getBytes(StandardCharsets.UTF_8);
 
-        exchange.sendResponseHeaders(response.getCode().getCode(), responseBytes.length);
+        exchange.sendResponseHeaders(serverResponse.getCode().getCode(), responseBytes.length);
         try (OutputStream os = exchange.getResponseBody()) {
             os.write(responseBytes);
         }
@@ -91,5 +90,5 @@ public abstract class AbstractHandler<T extends AbstractResponse> implements Htt
         return queryParams;
     }
 
-    protected abstract Response<T> resolve();
+    protected abstract ServerResponse resolve();
 }

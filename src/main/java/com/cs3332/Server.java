@@ -1,6 +1,7 @@
 package com.cs3332;
 
 import com.cs3332.data.DataManager;
+import com.cs3332.handler.LoginHandler;
 import com.cs3332.handler.TestHandler;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -25,6 +26,7 @@ public class Server {
     }
     private void registerContexts(){
         registerHandler("/test", new TestHandler(this));
+        registerHandler("/login", new LoginHandler(this));
     }
 
     private void registerHandler(String route, HttpHandler handler){

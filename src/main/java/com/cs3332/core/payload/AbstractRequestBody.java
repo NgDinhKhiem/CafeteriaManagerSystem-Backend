@@ -1,6 +1,5 @@
-package com.cs3332.handler.constructor.body;
+package com.cs3332.core.payload;
 
-import com.cs3332.core.utils.Logger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
