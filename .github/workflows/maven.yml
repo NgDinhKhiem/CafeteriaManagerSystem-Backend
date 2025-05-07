@@ -30,11 +30,12 @@ jobs:
       - name: List target contents
         run: ls -la target
 
-      - name: Upload JAR artifacts
+      # Upload only the specified JAR (CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar)
+      - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-jar
-          path: target/*.jar
+          name: CafeteriaManagerSystem-Backend-1.0-SNAPSHOT
+          path: target/CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar
 
       - name: Update dependency graph
         uses: advanced-security/maven-dependency-submission-action@v4
