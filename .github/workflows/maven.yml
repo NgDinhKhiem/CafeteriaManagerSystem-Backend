@@ -30,24 +30,11 @@ jobs:
       - name: List target contents
         run: ls -la target
 
-      # Update the dependency graph before uploading artifacts
-      - name: Update dependency graph
-        uses: advanced-security/maven-dependency-submission-action@v4
-
-      # Upload each .jar file as a separate artifact
-      - name: Upload JAR files
-        run: |
-          for jar in target/*.jar; do
-            echo "Uploading $jar"
-            name=$(basename "$jar")
-            echo "Uploading $name"
-            # Upload each JAR as a separate artifact
-            echo "::set-output name=jar_name::$name"
-            echo "::set-output name=jar_path::$jar"
-          done
-
-      - name: Upload artifact for each JAR
+      - name: Upload JAR artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.upload.outputs.jar_name }}
-          path: ${{ steps.upload.outputs.jar_path }}
+          name: app-jar
+          path: target/*.jar
+
+      - name: Update dependency graph
+        uses: advanced-security/maven-dependency-submission-action@v4
