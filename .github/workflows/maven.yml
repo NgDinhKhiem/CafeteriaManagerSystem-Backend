@@ -42,8 +42,12 @@ jobs:
             name=$(basename "$jar")
             echo "Uploading $name"
             # Upload each JAR as a separate artifact
-            actions/upload-artifact@v4:
-              with:
-                name: $name
-                path: $jar
-        shell: bash
+            echo "::set-output name=jar_name::$name"
+            echo "::set-output name=jar_path::$jar"
+          done
+
+      - name: Upload artifact for each JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.upload.outputs.jar_name }}
+          path: ${{ steps.upload.outputs.jar_path }}
