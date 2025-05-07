@@ -53,6 +53,6 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            target/CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar
+            target/*.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
