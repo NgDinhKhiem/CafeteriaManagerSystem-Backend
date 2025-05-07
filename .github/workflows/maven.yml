@@ -31,10 +31,6 @@ jobs:
       - name: List target contents
         run: ls -la target
 
-      # Update the dependency graph before uploading artifacts
-      - name: Update dependency graph
-        uses: advanced-security/maven-dependency-submission-action@v4
-
       # Create a GitHub Release (only if it doesn't already exist)
       - name: Create Release
         id: create_release
