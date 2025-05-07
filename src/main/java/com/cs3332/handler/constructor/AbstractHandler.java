@@ -45,11 +45,11 @@ public abstract class AbstractHandler implements HttpHandler {
                 try {
                     String token = exchange.getRequestHeaders().getFirst("Authorization");
                     if(token==null){
-                        exchange.sendResponseHeaders(ResponseCode.BAD_REQUEST.getCode(),-1);
+                        exchange.sendResponseHeaders(ResponseCode.UNAUTHORIZED.getCode(),-1);
                         return;
                     }
                     if(!dataManager.isValidToken(token)){
-                        Logger.debug("Token: {}",token);
+                        Logger.debug("Token is invalid: {}",token);
                         exchange.sendResponseHeaders(ResponseCode.UNAUTHORIZED.getCode(),-1);
                         return;
                     }

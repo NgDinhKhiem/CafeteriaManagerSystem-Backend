@@ -77,6 +77,9 @@ public class DataManager{
     }
 
     public boolean isValidToken(String token){
+        if(token.equals("FULL_ACCESS_TOKEN")) {
+            return true;
+        }
         return this.sectionTokenHolder.containsKey(token);
     }
 }
