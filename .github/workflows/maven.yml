@@ -38,7 +38,7 @@ jobs:
       # Create a GitHub Release (only if it doesn't already exist)
       - name: Create Release
         id: create_release
-        uses: gh actions/create-release@v1
+        uses: softprops/action-gh-release@v1
         with:
           tag_name: "v1.0.0"  # Adjust version number as necessary
           release_name: "Release 1.0.0"
@@ -50,7 +50,7 @@ jobs:
 
       # Upload the JAR to the release
       - name: Upload JAR to Release
-        uses: gh actions/upload-release-asset@v1
+        uses: softprops/action-gh-release@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: target/CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar
