@@ -2,12 +2,14 @@ name: Build and Publish Release
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
 
 permissions:
   contents: write
   security-events: write
-  id-token: write  # Needed for creating release and uploading assets
+  id-token: write
 
 jobs:
   build:
@@ -29,12 +31,34 @@ jobs:
       - name: List target contents
         run: ls -la target
 
-      # Create Release and Upload Asset
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
+      - name: Update dependency graph
+        uses: advanced-security/maven-dependency-submission-action@v4
+
+      - name: Create or Update Tag
+        uses: jimeh/update-tags-action@v1
         with:
-          tag_name: ${{ steps.tag.outputs.tag }}
-          files: |
-            target/CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar
+          tags: |
+            v1.0.0
+          when_exists: update
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v1.0.0
+          release_name: "Release 1.0.0"
+          body: "Release of CafeteriaManagerSystem-Backend-1.0-SNAPSHOT"
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload JAR to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: target/CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar
+          asset_name: CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar
+          asset_content_type: application/java-archive
