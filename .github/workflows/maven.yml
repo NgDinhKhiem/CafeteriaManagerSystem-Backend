@@ -52,13 +52,7 @@ jobs:
           body: "Release of CafeteriaManagerSystem-Backend-1.0-SNAPSHOT"
           draft: false
           prerelease: false
+          files: |
+            target/CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload JAR to Release
-        uses: softprops/action-gh-release@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: target/CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar
-          asset_name: CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar
-          asset_content_type: application/java-archive
