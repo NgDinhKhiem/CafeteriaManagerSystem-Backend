@@ -1,4 +1,4 @@
-name: Build
+name: Build and Publish Release
 
 on:
   push:
@@ -9,6 +9,7 @@ on:
 permissions:
   contents: write
   security-events: write
+  id-token: write  # Needed for creating release and uploading assets
 
 jobs:
   build:
@@ -30,12 +31,28 @@ jobs:
       - name: List target contents
         run: ls -la target
 
-      # Upload only the specified JAR (CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar)
-      - name: Upload JAR artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: CafeteriaManagerSystem-Backend-1.0-SNAPSHOT
-          path: target/CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar
-
+      # Update the dependency graph before uploading artifacts
       - name: Update dependency graph
         uses: advanced-security/maven-dependency-submission-action@v4
+
+      # Create a GitHub Release (only if it doesn't already exist)
+      - name: Create Release
+        id: create_release
+        uses: gh actions/create-release@v1
+        with:
+          tag_name: "v1.0.0"  # Adjust version number as necessary
+          release_name: "Release 1.0.0"
+          body: "Release of CafeteriaManagerSystem-Backend-1.0-SNAPSHOT"
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Upload the JAR to the release
+      - name: Upload JAR to Release
+        uses: gh actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: target/CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar
+          asset_name: CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar
+          asset_content_type: application/java-archive
