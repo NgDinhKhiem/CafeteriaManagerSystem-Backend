@@ -29,16 +29,6 @@ jobs:
       - name: List target contents
         run: ls -la target
 
-      # Create a Git tag
-      - name: Create Tag
-        id: tag
-        run: |
-          TAG="v1.0.0"
-          git tag $TAG
-          git push origin $TAG
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       # Create Release and Upload Asset
       - name: Create Release
         uses: softprops/action-gh-release@v1
