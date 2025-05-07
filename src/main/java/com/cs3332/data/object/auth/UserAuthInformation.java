@@ -1,4 +1,4 @@
-package com.cs3332.data.object;
+package com.cs3332.data.object.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

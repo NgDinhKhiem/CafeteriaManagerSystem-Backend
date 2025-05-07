@@ -1,4 +1,4 @@
-package com.cs3332.core.response.object;
+package com.cs3332.core.response.object.auth;
 
 import com.cs3332.core.response.constructor.AbstractResponse;
 import lombok.AllArgsConstructor;
@@ -8,8 +8,8 @@ import java.util.List;
 
 @AllArgsConstructor
 @Getter
-public class LoginSuccessResponse extends AbstractResponse {
-    private final String token;
+public class UserInformationResponse extends AbstractResponse {
+    private final String username;
     private final String name;
     private final String email;
     private final String phone;

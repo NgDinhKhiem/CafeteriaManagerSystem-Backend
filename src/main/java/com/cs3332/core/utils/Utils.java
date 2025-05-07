@@ -1,6 +1,7 @@
 package com.cs3332.core.utils;
 
 import java.security.SecureRandom;
+import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
@@ -59,4 +60,7 @@ public final class Utils {
         return email.matches(emailRegex);
     }
 
+    public static long getTime() {
+        return new Date().getTime();
+    }
 }

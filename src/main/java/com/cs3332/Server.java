@@ -3,6 +3,7 @@ package com.cs3332;
 import com.cs3332.data.DataManager;
 import com.cs3332.handler.authentication.*;
 import com.cs3332.handler.TestHandler;
+import com.cs3332.handler.product.*;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import lombok.Getter;
@@ -34,6 +35,20 @@ public class Server {
         registerHandler("/user_create", new RegisterHandler(this));
         registerHandler("/user_delete", new DeleteUserHandler(this));
         registerHandler("/user_password_update", new UpdatePasswordHandler(this));
+
+        // Product/Inventory
+        registerHandler("/item_stack_create", new CreateItemStackHandler(this));
+        registerHandler("/item_stack_info", new ItemStackInfoHandler(this));
+        registerHandler("/item_stack_list", new GetAllItemStacksHandler(this));
+        registerHandler("/product_create", new CreateProductHandler(this));
+        registerHandler("/product_info", new ProductInfoHandler(this));
+        registerHandler("/product_list", new GetAllProductsHandler(this));
+        registerHandler("/product_delete", new DeleteProductHandler(this));
+        registerHandler("/item_import", new ImportItemHandler(this));
+        registerHandler("/item_export", new ExportItemHandler(this));
+        registerHandler("/item_list", new GetAllItemsHandler(this));
+        registerHandler("/item_delete", new DeleteIOItemHandler(this));
+        registerHandler("/item_info", new ItemInfoHandler(this));
     }
 
     private void registerHandler(String route, HttpHandler handler){

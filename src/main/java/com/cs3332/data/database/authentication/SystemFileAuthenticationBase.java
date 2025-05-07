@@ -1,11 +1,10 @@
 package com.cs3332.data.database.authentication;
 
-import com.cs3332.Server;
 import com.cs3332.core.utils.Logger;
 import com.cs3332.core.utils.Response;
 import com.cs3332.data.constructor.AuthenticationSource;
-import com.cs3332.data.object.UserAuthInformation;
-import com.cs3332.data.object.UserInformation;
+import com.cs3332.data.object.auth.UserAuthInformation;
+import com.cs3332.data.object.auth.UserInformation;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

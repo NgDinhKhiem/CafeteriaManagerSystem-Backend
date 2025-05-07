@@ -7,10 +7,9 @@ import com.cs3332.core.object.ServerResponse;
 import com.cs3332.core.payload.object.auth.AccountRegisterPayload;
 import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.response.object.TextResponse;
-import com.cs3332.core.utils.Logger;
 import com.cs3332.core.utils.Response;
-import com.cs3332.data.object.UserAuthInformation;
-import com.cs3332.data.object.UserInformation;
+import com.cs3332.data.object.auth.UserAuthInformation;
+import com.cs3332.data.object.auth.UserInformation;
 import com.cs3332.handler.constructor.AbstractBodyHandler;
 
 public class RegisterHandler extends AbstractBodyHandler<AccountRegisterPayload> {

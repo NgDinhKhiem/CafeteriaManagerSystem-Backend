@@ -3,12 +3,10 @@ package com.cs3332.handler.authentication;
 import com.cs3332.Server;
 import com.cs3332.core.object.*;
 import com.cs3332.core.payload.object.auth.AccountInfoUpdatePayload;
-import com.cs3332.core.payload.object.auth.AccountRegisterPayload;
 import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.response.object.TextResponse;
 import com.cs3332.core.utils.Response;
-import com.cs3332.data.object.UserAuthInformation;
-import com.cs3332.data.object.UserInformation;
+import com.cs3332.data.object.auth.UserInformation;
 import com.cs3332.handler.constructor.AbstractBodyHandler;
 
 public class UpdateInformationHandler extends AbstractBodyHandler<AccountInfoUpdatePayload> {

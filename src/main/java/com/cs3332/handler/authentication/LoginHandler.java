@@ -4,9 +4,9 @@ import com.cs3332.Server;
 import com.cs3332.core.object.*;
 import com.cs3332.core.payload.object.auth.LoginPayload;
 import com.cs3332.core.response.object.ErrorResponse;
-import com.cs3332.core.response.object.LoginSuccessResponse;
+import com.cs3332.core.response.object.auth.LoginSuccessResponse;
 import com.cs3332.core.utils.Response;
-import com.cs3332.data.object.UserInformation;
+import com.cs3332.data.object.auth.UserInformation;
 import com.cs3332.handler.constructor.AbstractBodyHandler;
 
 public class LoginHandler extends AbstractBodyHandler<LoginPayload> {
