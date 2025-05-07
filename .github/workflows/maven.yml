@@ -3,8 +3,6 @@ name: Build and Publish Release
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 permissions:
   contents: write
@@ -31,24 +29,22 @@ jobs:
       - name: List target contents
         run: ls -la target
 
-      # Create a GitHub Release (only if it doesn't already exist)
-      - name: Create Release
-        id: create_release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: "v1.0.0"  # Adjust version number as necessary
-          release_name: "Release 1.0.0"
-          body: "Release of CafeteriaManagerSystem-Backend-1.0-SNAPSHOT"
-          draft: false
-          prerelease: false
+      # Create a Git tag
+      - name: Create Tag
+        id: tag
+        run: |
+          TAG="v1.0.0"
+          git tag $TAG
+          git push origin $TAG
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Upload the JAR to the release
-      - name: Upload JAR to Release
+      # Create Release and Upload Asset
+      - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: target/CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar
-          asset_name: CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar
-          asset_content_type: application/java-archive
+          tag_name: ${{ steps.tag.outputs.tag }}
+          files: |
+            target/CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
