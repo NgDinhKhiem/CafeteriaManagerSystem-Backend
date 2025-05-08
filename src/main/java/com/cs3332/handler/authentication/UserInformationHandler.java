@@ -1,36 +1,36 @@
 package com.cs3332.handler.authentication;
 
 import com.cs3332.Server;
-import com.cs3332.core.object.RequestMethod;
-import com.cs3332.core.object.ResponseCode;
-import com.cs3332.core.object.Role;
-import com.cs3332.core.object.ServerResponse;
+import com.cs3332.core.object.*;
 import com.cs3332.core.payload.object.auth.TargetUsernamePayload;
 import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.response.object.auth.UserInformationResponse;
 import com.cs3332.data.object.auth.UserInformation;
 import com.cs3332.handler.constructor.AbstractBodyHandler;
+import com.cs3332.handler.constructor.AbstractHandler;
 
-public class UserInformationHandler extends AbstractBodyHandler<TargetUsernamePayload> {
+public class UserInformationHandler extends AbstractHandler {
     private String token;
+    @Param
+    private String username;
     public UserInformationHandler(Server server) {
         super(server, RequestMethod.GET);
     }
 
     @Override
     protected ServerResponse resolve() {
-        if (payload.getUsername() == null || payload.getUsername().isEmpty()) {
+        if (username == null || username.isEmpty()) {
             return new ServerResponse(ResponseCode.BAD_REQUEST, new ErrorResponse("Username is required."));
         }
         if(
                 dataManager.getRole(token).contains(Role.ADMIN)&&
                 !dataManager.getRole(token).contains(Role.MANAGER)&&
-                !dataManager.isValidToken(token,payload.getUsername())){
+                !dataManager.isValidToken(token,username)){
             return new ServerResponse(ResponseCode.UNAUTHORIZED, new ErrorResponse("You do not have permission to issue this action!"));
         }
 
         UserInformation response = server.getDataManager().getAuthenticationSource().getUserInformation(
-                payload.getUsername()
+                username
         );
 
         if(response!=null)
