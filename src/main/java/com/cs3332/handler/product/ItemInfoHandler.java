@@ -21,7 +21,7 @@ public class ItemInfoHandler extends AbstractBodyHandler<ItemInfoPayload> {
         }
         Item item = server.getDataManager().getProductionDBSource().getItemInfo(payload.getItemID());
         if (item != null) {
-            return new ServerResponse(ResponseCode.OK,
+            return new ServerResponse(ResponseCode.FOUND,
                     new ItemResponse(item.getEntryID(), item.getItemStackID(),
                     item.getImportExportDate(), item.getExpiration_date(), item.getQuantity(),item.getSupplier()));
         } else {

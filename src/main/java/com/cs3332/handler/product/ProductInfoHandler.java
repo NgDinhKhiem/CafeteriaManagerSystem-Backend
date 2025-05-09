@@ -28,7 +28,7 @@ public class ProductInfoHandler extends AbstractBodyHandler<ProductInfoPayload> 
             List<Ingredient> ingredientResponses = product.getRecipe().stream()
                     .map(ing -> new Ingredient(ing.getItemStackID(), ing.getQuantity()))
                     .collect(Collectors.toList());
-            return new ServerResponse(ResponseCode.OK, new ProductResponse(
+            return new ServerResponse(ResponseCode.FOUND, new ProductResponse(
                     product.getID(),
                     product.getName(),
                     product.getUnit(),

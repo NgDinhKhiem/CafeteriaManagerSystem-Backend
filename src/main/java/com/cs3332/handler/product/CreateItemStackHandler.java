@@ -36,7 +36,7 @@ public class CreateItemStackHandler extends AbstractBodyHandler<CreateItemStackP
         ItemStack created = server.getDataManager().getProductionDBSource().createItemStack(itemStack);
 
         if (created != null) {
-            return new ServerResponse(ResponseCode.OK, new ItemStackResponse(created.getID(), created.getName(), created.getUnit()));
+            return new ServerResponse(ResponseCode.CREATED, new ItemStackResponse(created.getID(), created.getName(), created.getUnit()));
         } else {
             return new ServerResponse(ResponseCode.INTERNAL_SERVER_ERROR, new ErrorResponse("Failed to create ItemStack"));
         }

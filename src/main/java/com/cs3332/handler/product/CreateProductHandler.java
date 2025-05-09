@@ -61,7 +61,7 @@ public class CreateProductHandler extends AbstractBodyHandler<CreateProductPaylo
             List<Ingredient> ingredientResponses = created.getRecipe().stream()
                     .map(ing -> new Ingredient(ing.getItemStackID(), ing.getQuantity()))
                     .collect(Collectors.toList());
-            return new ServerResponse(ResponseCode.OK, new ProductResponse(
+            return new ServerResponse(ResponseCode.CREATED, new ProductResponse(
                     created.getID(),
                     created.getName(),
                     created.getUnit(),

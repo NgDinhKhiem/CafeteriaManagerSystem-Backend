@@ -21,6 +21,6 @@ public class GetAllItemStacksHandler extends AbstractHandler {
         List<ItemStackResponse> responses = itemStacks.stream()
                 .map(i -> new ItemStackResponse(i.getID(), i.getName(), i.getUnit()))
                 .collect(Collectors.toList());
-        return new ServerResponse(ResponseCode.OK, new ItemStackListResponse(responses));
+        return new ServerResponse(ResponseCode.FOUND, new ItemStackListResponse(responses));
     }
 }

@@ -22,7 +22,7 @@ public class ItemStackInfoHandler extends AbstractBodyHandler<ItemStackInfoPaylo
         }
         ItemStack itemStack = server.getDataManager().getProductionDBSource().getItemStack(payload.getItemStackID());
         if (itemStack != null) {
-            return new ServerResponse(ResponseCode.OK, new ItemStackResponse(itemStack.getID(), itemStack.getName(), itemStack.getUnit()));
+            return new ServerResponse(ResponseCode.FOUND, new ItemStackResponse(itemStack.getID(), itemStack.getName(), itemStack.getUnit()));
         } else {
             return new ServerResponse(ResponseCode.NOT_FOUND, new ErrorResponse("ItemStack not found"));
         }

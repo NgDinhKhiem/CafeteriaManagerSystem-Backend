@@ -30,6 +30,6 @@ public class GetAllProductsHandler extends AbstractHandler {
                                 .collect(Collectors.toList())
                 ))
                 .collect(Collectors.toList());
-        return new ServerResponse(ResponseCode.OK, new ProductListResponse(responses));
+        return new ServerResponse(ResponseCode.FOUND, new ProductListResponse(responses));
     }
 }

@@ -27,6 +27,6 @@ public class GetAllItemsHandler extends AbstractHandler {
                         i.getQuantity(),
                         i.getSupplier()))
                 .collect(Collectors.toList());
-        return new ServerResponse(ResponseCode.OK, new ItemListResponse(responses));
+        return new ServerResponse(ResponseCode.FOUND, new ItemListResponse(responses));
     }
 }

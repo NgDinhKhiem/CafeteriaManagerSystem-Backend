@@ -11,7 +11,7 @@ public class DeleteProductHandler extends AbstractBodyHandler<DeleteProductPaylo
     private String token;
 
     public DeleteProductHandler(Server server) {
-        super(server, RequestMethod.POST);
+        super(server, RequestMethod.DELETE);
     }
 
     @Override
