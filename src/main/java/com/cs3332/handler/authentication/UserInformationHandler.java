@@ -34,7 +34,7 @@ public class UserInformationHandler extends AbstractHandler {
         );
 
         if(response!=null)
-            return new ServerResponse(ResponseCode.OK, new UserInformationResponse(
+            return new ServerResponse(ResponseCode.FOUND, new UserInformationResponse(
                     response.getUsername(),
                     response.getName(),
                     response.getEmail(),

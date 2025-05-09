@@ -61,7 +61,7 @@ public class RegisterHandler extends AbstractBodyHandler<AccountRegisterPayload>
         );
 
         if(response.getState())
-            return new ServerResponse(ResponseCode.OK, new TextResponse("Register Successful"));
+            return new ServerResponse(ResponseCode.CREATED, new TextResponse("Register Successful"));
         else return new ServerResponse(ResponseCode.INTERNAL_SERVER_ERROR, new ErrorResponse(response.getResponse()));
     }
 }

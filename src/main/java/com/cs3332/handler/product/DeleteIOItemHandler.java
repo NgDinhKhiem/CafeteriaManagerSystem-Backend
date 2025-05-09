@@ -12,7 +12,7 @@ public class DeleteIOItemHandler extends AbstractBodyHandler<DeleteIOItemPayload
     private String token;
 
     public DeleteIOItemHandler(Server server) {
-        super(server, RequestMethod.POST);
+        super(server, RequestMethod.DELETE);
     }
 
     @Override
