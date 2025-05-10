@@ -2,7 +2,6 @@ package com.cs3332.handler.constructor;
 
 import com.cs3332.Server;
 import com.cs3332.core.object.*;
-import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.utils.Logger;
 import com.cs3332.data.DataManager;
 import com.sun.net.httpserver.HttpExchange;
@@ -12,7 +11,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class AbstractHandler implements HttpHandler {

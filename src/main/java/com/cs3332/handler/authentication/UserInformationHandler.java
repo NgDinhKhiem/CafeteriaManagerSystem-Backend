@@ -2,11 +2,9 @@ package com.cs3332.handler.authentication;
 
 import com.cs3332.Server;
 import com.cs3332.core.object.*;
-import com.cs3332.core.payload.object.auth.TargetUsernamePayload;
 import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.response.object.auth.UserInformationResponse;
 import com.cs3332.data.object.auth.UserInformation;
-import com.cs3332.handler.constructor.AbstractBodyHandler;
 import com.cs3332.handler.constructor.AbstractHandler;
 
 public class UserInformationHandler extends AbstractHandler {

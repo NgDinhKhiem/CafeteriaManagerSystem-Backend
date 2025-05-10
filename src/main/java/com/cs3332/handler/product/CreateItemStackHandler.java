@@ -8,7 +8,6 @@ import com.cs3332.core.object.ServerResponse;
 import com.cs3332.core.payload.object.product.CreateItemStackPayload;
 import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.response.object.product.ItemStackResponse;
-import com.cs3332.core.utils.Logger;
 import com.cs3332.data.object.storage.ItemStack;
 import com.cs3332.handler.constructor.AbstractBodyHandler;
 

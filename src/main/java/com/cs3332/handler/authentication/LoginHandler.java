@@ -1,7 +1,9 @@
 package com.cs3332.handler.authentication;
 
 import com.cs3332.Server;
-import com.cs3332.core.object.*;
+import com.cs3332.core.object.RequestMethod;
+import com.cs3332.core.object.ResponseCode;
+import com.cs3332.core.object.ServerResponse;
 import com.cs3332.core.payload.object.auth.LoginPayload;
 import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.response.object.auth.LoginSuccessResponse;
