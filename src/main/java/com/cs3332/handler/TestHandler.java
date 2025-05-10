@@ -2,11 +2,11 @@ package com.cs3332.handler;
 
 import com.cs3332.Server;
 import com.cs3332.core.object.RequestMethod;
-import com.cs3332.core.object.ServerResponse;
 import com.cs3332.core.object.ResponseCode;
+import com.cs3332.core.object.ServerResponse;
+import com.cs3332.core.payload.object.TextBody;
 import com.cs3332.core.response.object.TextResponse;
 import com.cs3332.handler.constructor.AbstractBodyHandler;
-import com.cs3332.core.payload.object.TextBody;
 
 public class TestHandler extends AbstractBodyHandler<TextBody> {
     public TestHandler(Server server) {

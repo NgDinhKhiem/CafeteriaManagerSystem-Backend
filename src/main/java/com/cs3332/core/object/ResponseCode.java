@@ -1,6 +1,5 @@
 package com.cs3332.core.object;
 
-import lombok.Getter;
 public enum ResponseCode {
     // 2xx Success
     OK(200),

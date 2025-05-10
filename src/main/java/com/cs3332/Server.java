@@ -1,8 +1,8 @@
 package com.cs3332;
 
 import com.cs3332.data.DataManager;
-import com.cs3332.handler.authentication.*;
 import com.cs3332.handler.TestHandler;
+import com.cs3332.handler.authentication.*;
 import com.cs3332.handler.product.*;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
