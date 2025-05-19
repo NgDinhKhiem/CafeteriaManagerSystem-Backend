@@ -2,22 +2,20 @@ package com.cs3332.handler.product;
 
 import com.cs3332.Server;
 import com.cs3332.core.object.*;
-import com.cs3332.core.payload.object.product.DeleteIOItemPayload;
 import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.response.object.TextResponse;
 import com.cs3332.core.utils.Response;
-import com.cs3332.handler.constructor.AbstractBodyHandler;
 import com.cs3332.handler.constructor.AbstractHandler;
 
 import java.util.UUID;
 
-public class DeleteIOItemHandler extends AbstractHandler {
+public class DeleteItemStackHandler extends AbstractHandler {
     private String token;
 
     @Param
     private UUID entryID;
 
-    public DeleteIOItemHandler(Server server) {
+    public DeleteItemStackHandler(Server server) {
         super(server, RequestMethod.DELETE);
     }
 
@@ -29,7 +27,7 @@ public class DeleteIOItemHandler extends AbstractHandler {
         if (entryID == null) {
             return new ServerResponse(ResponseCode.BAD_REQUEST, new ErrorResponse("Entry ID is required."));
         }
-        Response response = server.getDataManager().getProductionDBSource().deleteIOItem(entryID);
+        Response response = server.getDataManager().getProductionDBSource().removeItemStack(entryID);
         if (response.getState()) {
             return new ServerResponse(ResponseCode.OK, new TextResponse("Item entry deleted successfully"));
         } else {

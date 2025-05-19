@@ -1,11 +1,49 @@
 {
   "itemStacks": {
-    "f7397782-4a19-4bd1-9fa4-aa7765440a70": {
-      "ID": "f7397782-4a19-4bd1-9fa4-aa7765440a70",
+    "ed2044b1-583a-45e5-a88f-315530d4d1bc": {
+      "ID": "ed2044b1-583a-45e5-a88f-315530d4d1bc",
       "name": "Sugar",
-      "unit": "kg"
+      "unit": "gram"
+    },
+    "30661d74-e468-4c84-a267-a5753ee9cb37": {
+      "ID": "30661d74-e468-4c84-a267-a5753ee9cb37",
+      "name": "Coffee",
+      "unit": "gram"
     }
   },
   "products": {},
-  "items": {}
+  "items": {
+    "992edfc8-04b5-4e35-82da-9bde8d2f1b3d": {
+      "itemStackID": "ed2044b1-583a-45e5-a88f-315530d4d1bc",
+      "entryID": "992edfc8-04b5-4e35-82da-9bde8d2f1b3d",
+      "importExportDate": 1747211917792,
+      "expiration_date": -1,
+      "quantity": 1.0,
+      "supplier": "Reason"
+    },
+    "5f1c555b-11f8-44ae-be7b-fb2c6baee900": {
+      "itemStackID": "30661d74-e468-4c84-a267-a5753ee9cb37",
+      "entryID": "5f1c555b-11f8-44ae-be7b-fb2c6baee900",
+      "importExportDate": 1747212480323,
+      "expiration_date": -1,
+      "quantity": 10.0,
+      "supplier": "Restock"
+    },
+    "0c33b633-47e5-42e5-aa51-9e1ec24284b8": {
+      "itemStackID": "30661d74-e468-4c84-a267-a5753ee9cb37",
+      "entryID": "0c33b633-47e5-42e5-aa51-9e1ec24284b8",
+      "importExportDate": 1747212481333,
+      "expiration_date": -1,
+      "quantity": 10.0,
+      "supplier": "Restock"
+    },
+    "9260c29b-9f25-4cde-8e52-9755c480fed9": {
+      "itemStackID": "30661d74-e468-4c84-a267-a5753ee9cb37",
+      "entryID": "9260c29b-9f25-4cde-8e52-9755c480fed9",
+      "importExportDate": 1747212482185,
+      "expiration_date": -1,
+      "quantity": 10.0,
+      "supplier": "Restock"
+    }
+  }
 }

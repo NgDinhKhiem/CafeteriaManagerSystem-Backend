@@ -40,6 +40,7 @@ public class Server {
         registerHandler("/item_stack_create", new CreateItemStackHandler(this));
         registerHandler("/item_stack_info", new ItemStackInfoHandler(this));
         registerHandler("/item_stack_list", new GetAllItemStacksHandler(this));
+        registerHandler("/item_stack_delete", new DeleteItemStackHandler(this));
         registerHandler("/product_create", new CreateProductHandler(this));
         registerHandler("/product_info", new ProductInfoHandler(this));
         registerHandler("/product_list", new GetAllProductsHandler(this));
