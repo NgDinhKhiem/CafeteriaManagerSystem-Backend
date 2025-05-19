@@ -4,7 +4,7 @@ import com.cs3332.data.DataManager;
 import com.cs3332.handler.TestHandler;
 import com.cs3332.handler.authentication.*;
 import com.cs3332.handler.product.*;
-import com.cs3332.handler.order.CreateOrderHandler;
+import com.cs3332.handler.order.*;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import lombok.Getter;
@@ -54,6 +54,19 @@ public class Server {
 
         // Order Management
         registerHandler("/order_create", new CreateOrderHandler(this));
+        registerHandler("/order_list", new OrderListHandler(this));
+        registerHandler("/order_status_update", new UpdateOrderStatusHandler(this));
+
+        // Product Categories
+        registerHandler("/product_categories", new GetProductCategoriesHandler(this));
+        registerHandler("/products_by_category", new GetProductsByCategoryHandler(this));
+
+        // Cart Management
+        registerHandler("/cart_add", new AddToCartHandler(this));
+        registerHandler("/cart_remove", new RemoveFromCartHandler(this));
+        registerHandler("/cart_update", new UpdateCartHandler(this));
+        registerHandler("/cart_get", new GetCartHandler(this));
+        registerHandler("/cart_checkout", new CheckoutCartHandler(this));
     }
 
     private void registerHandler(String route, HttpHandler handler){

@@ -1,6 +1,6 @@
 package com.cs3332.core.response.object.order;
 
-import com.cs3332.core.response.AbstractResponse;
+import com.cs3332.core.response.constructor.AbstractResponse;
 import com.cs3332.data.object.order.OrderItem;
 import com.cs3332.data.object.order.OrderStatus;
 import lombok.AllArgsConstructor;
