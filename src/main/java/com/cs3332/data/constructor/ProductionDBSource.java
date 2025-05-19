@@ -4,6 +4,9 @@ import com.cs3332.core.utils.Response;
 import com.cs3332.data.object.storage.Item;
 import com.cs3332.data.object.storage.ItemStack;
 import com.cs3332.data.object.storage.Product;
+import com.cs3332.data.object.order.Order;
+import com.cs3332.data.object.order.OrderStatus;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,4 +25,18 @@ public interface ProductionDBSource extends DBSource{
     List<Item> getAllItem();
     Response deleteIOItem(UUID entryID);
     Item getItemInfo(UUID ID);
+
+    // ---------- Order ----------
+
+    Order createOrder(Order order);
+
+    Order getOrder(UUID orderID);
+
+    List<Order> getAllOrders();
+
+    List<Order> getOrdersByUserID(String userID);
+
+    List<Order> getOrdersByStatus(OrderStatus status);
+
+    Response updateOrderStatus(UUID orderID, OrderStatus newStatus, @Nullable Long paymentTimestamp);
 }

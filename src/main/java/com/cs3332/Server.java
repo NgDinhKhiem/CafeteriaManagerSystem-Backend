@@ -4,6 +4,7 @@ import com.cs3332.data.DataManager;
 import com.cs3332.handler.TestHandler;
 import com.cs3332.handler.authentication.*;
 import com.cs3332.handler.product.*;
+import com.cs3332.handler.order.CreateOrderHandler;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import lombok.Getter;
@@ -50,6 +51,9 @@ public class Server {
         registerHandler("/item_list", new GetAllItemsHandler(this));
         registerHandler("/item_delete", new DeleteIOItemHandler(this));
         registerHandler("/item_info", new ItemInfoHandler(this));
+
+        // Order Management
+        registerHandler("/order_create", new CreateOrderHandler(this));
     }
 
     private void registerHandler(String route, HttpHandler handler){

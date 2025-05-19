@@ -7,6 +7,9 @@ import com.cs3332.data.object.storage.Ingredient;
 import com.cs3332.data.object.storage.Item;
 import com.cs3332.data.object.storage.ItemStack;
 import com.cs3332.data.object.storage.Product;
+import com.cs3332.data.object.order.Order;
+import com.cs3332.data.object.order.OrderItem;
+import com.cs3332.data.object.order.OrderStatus;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -21,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 
 public class SystemFileProductionDB implements ProductionDBSource {
     private transient final Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -29,6 +34,7 @@ public class SystemFileProductionDB implements ProductionDBSource {
     private final Map<UUID, ItemStack> itemStacks = new ConcurrentHashMap<>();
     private final Map<UUID, Product> products = new ConcurrentHashMap<>();
     private final Map<UUID, Item> items = new ConcurrentHashMap<>();
+    private final Map<UUID, Order> orders = new ConcurrentHashMap<>();
 
     @Override
     public void save() {
@@ -59,6 +65,10 @@ public class SystemFileProductionDB implements ProductionDBSource {
             this.products.putAll(loaded.products);
             this.items.clear();
             this.items.putAll(loaded.items);
+            this.orders.clear();
+            if (loaded.orders != null) {
+                this.orders.putAll(loaded.orders);
+            }
 
             System.out.println("Loaded successfully.");
         } catch (IOException e) {
@@ -171,5 +181,60 @@ public class SystemFileProductionDB implements ProductionDBSource {
     @Override
     public Item getItemInfo(UUID ID) {
         return items.get(ID);
+    }
+
+    // ---------- Order ----------
+
+    @Override
+    public Order createOrder(Order order) {
+        if (orders.containsKey(order.getOrderID())) return null;
+        for (OrderItem item : order.getItems()) {
+            if (!products.containsKey(item.getProductID())) {
+                Logger.warn("Product with ID {} not found while creating order {}.", item.getProductID(), order.getOrderID());
+                return null;
+            }
+        }
+        orders.put(order.getOrderID(), order);
+        save();
+        return order;
+    }
+
+    @Override
+    public Order getOrder(UUID orderID) {
+        return orders.get(orderID);
+    }
+
+    @Override
+    public List<Order> getAllOrders() {
+        return new ArrayList<>(orders.values());
+    }
+
+    @Override
+    public List<Order> getOrdersByUserID(String userID) {
+        return orders.values().stream()
+                .filter(order -> userID.equals(order.getUserID()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Order> getOrdersByStatus(OrderStatus status) {
+        return orders.values().stream()
+                .filter(order -> status.equals(order.getStatus()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Response updateOrderStatus(UUID orderID, OrderStatus newStatus, @Nullable Long paymentTimestamp) {
+        Order order = orders.get(orderID);
+        if (order == null) {
+            return new Response("Order not found.");
+        }
+        order.setStatus(newStatus);
+        if (newStatus == OrderStatus.PAID && paymentTimestamp != null) {
+            order.setPaymentTimestamp(paymentTimestamp);
+        }
+        orders.put(orderID, order);
+        save();
+        return new Response();
     }
 }
