@@ -1,7 +1,6 @@
 package com.cs3332.core.payload.object.order;
 
 import com.cs3332.core.payload.AbstractRequestBody;
-import com.cs3332.data.object.order.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +12,6 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateOrderStatusPayload extends AbstractRequestBody {
+public class OrderInfoPayload extends AbstractRequestBody {
     private UUID orderID;
-    private OrderStatus newStatus;
 } 

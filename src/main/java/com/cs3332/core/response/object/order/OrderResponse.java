@@ -14,7 +14,6 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class OrderResponse extends AbstractResponse {
     private UUID orderID;
@@ -25,4 +24,14 @@ public class OrderResponse extends AbstractResponse {
     private String userID; // Username of the cashier/bartender who created/handled the order
     @Nullable
     private Long paymentTimestamp;
-} 
+    @Nullable
+    private Long preparationStartTimestamp;
+    @Nullable
+    private Long readyTimestamp;
+    @Nullable
+    private Long completionTimestamp;
+    @Nullable
+    private String notes;
+    @Nullable
+    private String preparedBy;
+}

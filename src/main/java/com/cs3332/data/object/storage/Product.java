@@ -2,17 +2,22 @@ package com.cs3332.data.object.storage;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.UUID;
 
-@AllArgsConstructor
 @Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product {
-    private final UUID ID;
-    private final String name;
-    private final String unit;
-    private final List<Ingredient> recipe;
-    private final float price;
+    private UUID ID;
+    private String name;
+    private String unit;
+    private List<Ingredient> recipe;
+    private float price;
+    private String category; // e.g., "Coffee", "Tea", "Pastry", etc.
 }
 

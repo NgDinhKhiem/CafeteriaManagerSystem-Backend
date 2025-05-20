@@ -1,7 +1,6 @@
-package com.cs3332.core.response.object.order;
+package com.cs3332.core.response.object.product;
 
 import com.cs3332.core.response.constructor.AbstractResponse;
-import com.cs3332.data.object.order.Order;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +12,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderListResponse extends AbstractResponse {
-    private List<OrderResponse> orders;
+public class ProductCategoryResponse extends AbstractResponse {
+    private List<String> categories;
 } 

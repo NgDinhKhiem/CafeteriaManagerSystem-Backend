@@ -13,7 +13,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateOrderStatusPayload extends AbstractRequestBody {
-    private UUID orderID;
-    private OrderStatus newStatus;
+public class ListOrdersPayload extends AbstractRequestBody {
+    private UUID userID;
+    private OrderStatus status;
 } 

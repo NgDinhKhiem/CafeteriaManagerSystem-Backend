@@ -16,7 +16,6 @@ import com.cs3332.handler.constructor.AbstractBodyHandler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class CreateOrderHandler extends AbstractBodyHandler<CreateOrderPayload> {
     private String token;
@@ -66,17 +65,14 @@ public class CreateOrderHandler extends AbstractBodyHandler<CreateOrderPayload> 
                 totalAmount,
                 System.currentTimeMillis(),
                 OrderStatus.PENDING_PAYMENT,
-                requester.getUsername(), 
-                null 
+                requester.getUsername(),
+
         );
 
         Order createdOrder = server.getDataManager().getProductionDBSource().createOrder(newOrder);
         if (createdOrder == null) {
-            // This could happen if UUID collides (highly unlikely) or other DB source internal errors
             return new ServerResponse(ResponseCode.INTERNAL_SERVER_ERROR, new ErrorResponse("Failed to create order. Please try again."));
         }
-
-        // TODO: Deduct ingredients from inventory based on product recipes after order creation is confirmed.
 
         OrderResponse response = new OrderResponse(
                 createdOrder.getOrderID(),

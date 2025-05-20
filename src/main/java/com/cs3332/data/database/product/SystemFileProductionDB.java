@@ -12,6 +12,7 @@ import com.cs3332.data.object.order.OrderItem;
 import com.cs3332.data.object.order.OrderStatus;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -25,7 +26,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-import javax.annotation.Nullable;
 
 public class SystemFileProductionDB implements ProductionDBSource {
     private transient final Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -230,9 +230,25 @@ public class SystemFileProductionDB implements ProductionDBSource {
             return new Response("Order not found.");
         }
         order.setStatus(newStatus);
-        if (newStatus == OrderStatus.PAID && paymentTimestamp != null) {
-            order.setPaymentTimestamp(paymentTimestamp);
+        
+        // Update relevant timestamps based on new status
+        switch (newStatus) {
+            case PAID:
+                if (paymentTimestamp != null) {
+                    order.setPaymentTimestamp(paymentTimestamp);
+                }
+                break;
+            case PREPARING:
+                order.setPreparationStartTimestamp(System.currentTimeMillis());
+                break;
+            case READY:
+                order.setReadyTimestamp(System.currentTimeMillis());
+                break;
+            case COMPLETED:
+                order.setCompletionTimestamp(System.currentTimeMillis());
+                break;
         }
+        
         orders.put(orderID, order);
         save();
         return new Response();

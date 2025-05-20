@@ -22,4 +22,14 @@ public class Order {
     private String userID; // Username of the cashier/bartender
     @Nullable
     private Long paymentTimestamp;
+    @Nullable
+    private Long preparationStartTimestamp; // When bartender starts preparing
+    @Nullable
+    private Long readyTimestamp; // When order is ready for pickup
+    @Nullable
+    private Long completionTimestamp; // When order is picked up/delivered
+    @Nullable
+    private String notes; // Special instructions or notes for the order
+    @Nullable
+    private String preparedBy; // Username of the bartender who prepared the order
 } 

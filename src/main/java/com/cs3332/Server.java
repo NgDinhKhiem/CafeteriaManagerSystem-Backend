@@ -54,8 +54,9 @@ public class Server {
 
         // Order Management
         registerHandler("/order_create", new CreateOrderHandler(this));
-        registerHandler("/order_list", new OrderListHandler(this));
-        registerHandler("/order_status_update", new UpdateOrderStatusHandler(this));
+        registerHandler("/order_info", new GetOrderInfoHandler(this));
+        registerHandler("/order_list", new ListOrdersHandler(this));
+        registerHandler("/order_update_status", new UpdateOrderStatusHandler(this));
 
         // Product Categories
         registerHandler("/product_categories", new GetProductCategoriesHandler(this));
