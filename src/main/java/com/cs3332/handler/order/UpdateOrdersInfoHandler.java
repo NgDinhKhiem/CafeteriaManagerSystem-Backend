@@ -5,17 +5,17 @@ import com.cs3332.core.object.RequestMethod;
 import com.cs3332.core.object.ResponseCode;
 import com.cs3332.core.object.Role;
 import com.cs3332.core.object.ServerResponse;
-import com.cs3332.core.payload.object.order.UpdateOrderStatusPayload;
+import com.cs3332.core.payload.object.order.OrderInfoPayload;
 import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.response.object.TextResponse;
 import com.cs3332.core.utils.Response;
 import com.cs3332.data.object.order.Order;
 import com.cs3332.handler.constructor.AbstractBodyHandler;
 
-public class UpdateOrderStatusHandler extends AbstractBodyHandler<UpdateOrderStatusPayload> {
+public class UpdateOrdersInfoHandler extends AbstractBodyHandler<OrderInfoPayload> {
     private String token;
 
-    public UpdateOrderStatusHandler(Server server) {
+    public UpdateOrdersInfoHandler(Server server) {
         super(server, RequestMethod.POST);
     }
 
@@ -39,7 +39,18 @@ public class UpdateOrderStatusHandler extends AbstractBodyHandler<UpdateOrderSta
             return new ServerResponse(ResponseCode.NOT_FOUND, new ErrorResponse("Order not found."));
         }
 
-        order.setStatus(payload.getNewStatus());
+        order = new Order(
+                payload.getTableID(),
+                payload.getOrderID(),
+                payload.getItems(),
+                payload.getOrderTimestamp(),
+                payload.getStatus(),
+                payload.getUserID(),
+                payload.getPaymentTimestamp(),
+                payload.getPreparationStartTimestamp(),
+                payload.getReadyTimestamp(),
+                payload.getPreparedBy()
+        );
 
         // Validate status transition
         /*if (!isValidStatusTransition(order.getStatus(), payload.getNewStatus())) {

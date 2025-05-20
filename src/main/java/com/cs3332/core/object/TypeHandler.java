@@ -1,6 +1,8 @@
 package com.cs3332.core.object;
 
 
+import com.cs3332.data.object.order.OrderStatus;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -18,6 +20,7 @@ public final class TypeHandler {
         adapters.put(boolean.class, Boolean::valueOf);
         adapters.put(UUID.class, UUID::fromString);
         adapters.put(Role.class, Role::valueOf);
+        adapters.put(OrderStatus.class, OrderStatus::valueOf);
     }
 
     @SuppressWarnings("unchecked")

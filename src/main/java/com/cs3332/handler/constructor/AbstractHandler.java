@@ -62,6 +62,11 @@ public abstract class AbstractHandler implements HttpHandler {
                 paramField.setAccessible(false);
             }
         }
+        List<Field> optionalParamFields = new ArrayList<>();
+        for (Field paramField : paramFields) {
+            if(paramField.isAnnotationPresent(OptionalParam.class))
+                optionalParamFields.add(paramField);
+        }
         paramFields.removeIf(field -> !field.isAnnotationPresent(Param.class));
 
         Logger.info("Handling request for URI: {} with handler {}", exchange.getRequestURI(), this.getClass().getSimpleName());
@@ -81,6 +86,25 @@ public abstract class AbstractHandler implements HttpHandler {
                 Logger.warn("Missing required query param: {}", fieldName);
                 exchange.sendResponseHeaders(ResponseCode.BAD_REQUEST.getCode(), -1);
                 return;
+            }
+
+            field.setAccessible(true);
+            try {
+                Object value = TypeHandler.getAdapter(field.getType()).convert(queryParams.get(fieldName));
+                field.set(this, value);
+            } catch (IllegalAccessException e) {
+                Logger.error("Failed to set field value via reflection: {}", e.getMessage());
+                exchange.sendResponseHeaders(ResponseCode.INTERNAL_SERVER_ERROR.getCode(), -1);
+                return;
+            } finally {
+                field.setAccessible(false);
+            }
+        }
+
+        for (Field field : optionalParamFields) {
+            String fieldName = field.getName();
+            if (!queryParams.containsKey(fieldName)) {
+                continue;
             }
 
             field.setAccessible(true);

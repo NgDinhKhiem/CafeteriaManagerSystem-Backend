@@ -3,13 +3,13 @@ package com.cs3332.data.database.product;
 import com.cs3332.core.utils.Logger;
 import com.cs3332.core.utils.Response;
 import com.cs3332.data.constructor.ProductionDBSource;
+import com.cs3332.data.object.order.Order;
+import com.cs3332.data.object.order.OrderItem;
+import com.cs3332.data.object.order.OrderStatus;
 import com.cs3332.data.object.storage.Ingredient;
 import com.cs3332.data.object.storage.Item;
 import com.cs3332.data.object.storage.ItemStack;
 import com.cs3332.data.object.storage.Product;
-import com.cs3332.data.object.order.Order;
-import com.cs3332.data.object.order.OrderItem;
-import com.cs3332.data.object.order.OrderStatus;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.jetbrains.annotations.Nullable;
@@ -20,12 +20,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 public class SystemFileProductionDB implements ProductionDBSource {
     private transient final Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -49,7 +45,7 @@ public class SystemFileProductionDB implements ProductionDBSource {
     public void load() {
         Logger.debug("File Location: {}", file.getAbsolutePath());
         if (!file.exists()) {
-            System.out.println("No save file found.");
+            Logger.debug("No save file found nothing to load!");
             return;
         }
 
@@ -66,11 +62,9 @@ public class SystemFileProductionDB implements ProductionDBSource {
             this.items.clear();
             this.items.putAll(loaded.items);
             this.orders.clear();
-            if (loaded.orders != null) {
-                this.orders.putAll(loaded.orders);
-            }
+            this.orders.putAll(loaded.orders);
 
-            System.out.println("Loaded successfully.");
+            Logger.debug("Loaded successfully.");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -210,47 +204,21 @@ public class SystemFileProductionDB implements ProductionDBSource {
     }
 
     @Override
-    public List<Order> getOrdersByUserID(String userID) {
-        return orders.values().stream()
-                .filter(order -> userID.equals(order.getUserID()))
-                .collect(Collectors.toList());
+    public List<Order> getOrders(@Nullable String tableID, @Nullable OrderStatus status) {
+        List<Order> or = new ArrayList<>(orders.values());
+        if(tableID!=null)
+            or.removeIf(s-> !Objects.equals(tableID, s.getTableID()));
+        if(status!=null)
+            or.removeIf(s-> !Objects.equals(status, s.getStatus()));
+        return or;
     }
 
     @Override
-    public List<Order> getOrdersByStatus(OrderStatus status) {
-        return orders.values().stream()
-                .filter(order -> status.equals(order.getStatus()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public Response updateOrderStatus(UUID orderID, OrderStatus newStatus, @Nullable Long paymentTimestamp) {
-        Order order = orders.get(orderID);
-        if (order == null) {
-            return new Response("Order not found.");
-        }
-        order.setStatus(newStatus);
-        
-        // Update relevant timestamps based on new status
-        switch (newStatus) {
-            case PAID:
-                if (paymentTimestamp != null) {
-                    order.setPaymentTimestamp(paymentTimestamp);
-                }
-                break;
-            case PREPARING:
-                order.setPreparationStartTimestamp(System.currentTimeMillis());
-                break;
-            case READY:
-                order.setReadyTimestamp(System.currentTimeMillis());
-                break;
-            case COMPLETED:
-                order.setCompletionTimestamp(System.currentTimeMillis());
-                break;
-        }
-        
+    public Response updateOrderInformation(UUID orderID, Order order) {
+        if(!orders.containsKey(orderID))
+            return new Response("Order not found!");
         orders.put(orderID, order);
         save();
-        return new Response();
+        return null;
     }
 }

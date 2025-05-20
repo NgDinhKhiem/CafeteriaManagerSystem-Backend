@@ -1,17 +1,18 @@
 package com.cs3332.data.constructor;
 
 import com.cs3332.core.utils.Response;
+import com.cs3332.data.object.order.Order;
+import com.cs3332.data.object.order.OrderStatus;
 import com.cs3332.data.object.storage.Item;
 import com.cs3332.data.object.storage.ItemStack;
 import com.cs3332.data.object.storage.Product;
-import com.cs3332.data.object.order.Order;
-import com.cs3332.data.object.order.OrderStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface ProductionDBSource extends DBSource{
+    // ---------- Production/Storage ----------
     ItemStack createItemStack(ItemStack itemStack);
     ItemStack getItemStack(UUID itemStackID);
     List<ItemStack> getAllItemStack();
@@ -34,9 +35,7 @@ public interface ProductionDBSource extends DBSource{
 
     List<Order> getAllOrders();
 
-    List<Order> getOrdersByUserID(String userID);
+    List<Order> getOrders(@Nullable String tableID, @Nullable OrderStatus status);
 
-    List<Order> getOrdersByStatus(OrderStatus status);
-
-    Response updateOrderStatus(UUID orderID, OrderStatus newStatus, @Nullable Long paymentTimestamp);
+    Response updateOrderInformation(UUID orderID, Order order);
 }

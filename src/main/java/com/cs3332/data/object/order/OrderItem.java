@@ -14,5 +14,5 @@ import java.util.UUID;
 public class OrderItem {
     private UUID productID;
     private int quantity;
-    private double priceAtOrder; // Price of the product at the time the order was placed
+    private double priceAtOrder;
 } 

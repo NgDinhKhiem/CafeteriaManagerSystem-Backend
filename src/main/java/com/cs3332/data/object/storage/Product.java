@@ -18,6 +18,5 @@ public class Product {
     private String unit;
     private List<Ingredient> recipe;
     private float price;
-    private String category; // e.g., "Coffee", "Tea", "Pastry", etc.
 }
 

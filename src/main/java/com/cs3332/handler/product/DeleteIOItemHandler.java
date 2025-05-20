@@ -2,11 +2,9 @@ package com.cs3332.handler.product;
 
 import com.cs3332.Server;
 import com.cs3332.core.object.*;
-import com.cs3332.core.payload.object.product.DeleteIOItemPayload;
 import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.response.object.TextResponse;
 import com.cs3332.core.utils.Response;
-import com.cs3332.handler.constructor.AbstractBodyHandler;
 import com.cs3332.handler.constructor.AbstractHandler;
 
 import java.util.UUID;

@@ -1,7 +1,6 @@
 package com.cs3332.core.response.object.order;
 
 import com.cs3332.core.response.constructor.AbstractResponse;
-import com.cs3332.data.object.order.Order;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

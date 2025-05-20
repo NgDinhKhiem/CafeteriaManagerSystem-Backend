@@ -14,6 +14,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ListOrdersPayload extends AbstractRequestBody {
-    private UUID userID;
+    private UUID tableID;
     private OrderStatus status;
 } 

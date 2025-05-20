@@ -1,11 +1,15 @@
 package com.cs3332.handler.order;
 
 import com.cs3332.Server;
-import com.cs3332.core.object.*;
+import com.cs3332.core.object.RequestMethod;
+import com.cs3332.core.object.ResponseCode;
+import com.cs3332.core.object.Role;
+import com.cs3332.core.object.ServerResponse;
 import com.cs3332.core.payload.object.order.CreateOrderPayload;
 import com.cs3332.core.payload.object.order.OrderItemPayload;
 import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.response.object.order.OrderResponse;
+import com.cs3332.core.utils.Utils;
 import com.cs3332.data.object.auth.UserInformation;
 import com.cs3332.data.object.order.Order;
 import com.cs3332.data.object.order.OrderItem;
@@ -42,7 +46,6 @@ public class CreateOrderHandler extends AbstractBodyHandler<CreateOrderPayload> 
         }
 
         List<OrderItem> orderItems = new ArrayList<>();
-        double totalAmount = 0;
 
         for (OrderItemPayload itemPayload : payload.getItems()) {
             if (itemPayload.getProductID() == null || itemPayload.getQuantity() <= 0) {
@@ -52,21 +55,22 @@ public class CreateOrderHandler extends AbstractBodyHandler<CreateOrderPayload> 
             if (product == null) {
                 return new ServerResponse(ResponseCode.NOT_FOUND, new ErrorResponse("Product not found: " + itemPayload.getProductID()));
             }
-            // TODO: Implement inventory check and deduction here. For now, assume infinite stock.
 
             OrderItem orderItem = new OrderItem(product.getID(), itemPayload.getQuantity(), product.getPrice());
             orderItems.add(orderItem);
-            totalAmount += product.getPrice() * itemPayload.getQuantity();
         }
 
         Order newOrder = new Order(
+                payload.getTableID(),
                 UUID.randomUUID(),
                 orderItems,
-                totalAmount,
-                System.currentTimeMillis(),
-                OrderStatus.PENDING_PAYMENT,
+                Utils.getTime(),
+                OrderStatus.PENDING_CONFIRMATION,
                 requester.getUsername(),
-
+                0L,
+                0L,
+                0L,
+                ""
         );
 
         Order createdOrder = server.getDataManager().getProductionDBSource().createOrder(newOrder);
@@ -75,13 +79,16 @@ public class CreateOrderHandler extends AbstractBodyHandler<CreateOrderPayload> 
         }
 
         OrderResponse response = new OrderResponse(
+                createdOrder.getTableID(),
                 createdOrder.getOrderID(),
                 createdOrder.getItems(),
-                createdOrder.getTotalAmount(),
                 createdOrder.getOrderTimestamp(),
                 createdOrder.getStatus(),
                 createdOrder.getUserID(),
-                createdOrder.getPaymentTimestamp()
+                createdOrder.getPaymentTimestamp(),
+                createdOrder.getPreparationStartTimestamp(),
+                createdOrder.getReadyTimestamp(),
+                createdOrder.getPreparedBy()
         );
 
         return new ServerResponse(ResponseCode.CREATED, response);
