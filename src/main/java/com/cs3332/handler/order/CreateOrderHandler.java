@@ -14,12 +14,12 @@ import com.cs3332.data.object.auth.UserInformation;
 import com.cs3332.data.object.order.Order;
 import com.cs3332.data.object.order.OrderItem;
 import com.cs3332.data.object.order.OrderStatus;
+import com.cs3332.data.object.storage.Ingredient;
+import com.cs3332.data.object.storage.Item;
 import com.cs3332.data.object.storage.Product;
 import com.cs3332.handler.constructor.AbstractBodyHandler;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class CreateOrderHandler extends AbstractBodyHandler<CreateOrderPayload> {
     private String token;
@@ -46,18 +46,63 @@ public class CreateOrderHandler extends AbstractBodyHandler<CreateOrderPayload> 
         }
 
         List<OrderItem> orderItems = new ArrayList<>();
-
+        
+        // Check ingredient availability for all products in the order
+        Map<UUID, Float> requiredIngredients = new HashMap<>();
+        
         for (OrderItemPayload itemPayload : payload.getItems()) {
             if (itemPayload.getProductID() == null || itemPayload.getQuantity() <= 0) {
                 return new ServerResponse(ResponseCode.BAD_REQUEST, new ErrorResponse("Invalid item details: Product ID is null or quantity is not positive."));
             }
+            
             Product product = server.getDataManager().getProductionDBSource().getProduct(itemPayload.getProductID());
             if (product == null) {
                 return new ServerResponse(ResponseCode.NOT_FOUND, new ErrorResponse("Product not found: " + itemPayload.getProductID()));
             }
+            
+            // Calculate required ingredients for this product
+            for (Ingredient ingredient : product.getRecipe()) {
+                UUID itemStackId = ingredient.getItemStackID();
+                float requiredQuantity = ingredient.getQuantity() * itemPayload.getQuantity();
+                
+                // Add to our running total of required ingredients
+                requiredIngredients.put(
+                    itemStackId,
+                    requiredIngredients.getOrDefault(itemStackId, 0f) + requiredQuantity
+                );
+            }
 
             OrderItem orderItem = new OrderItem(product.getID(), itemPayload.getQuantity(), product.getPrice());
             orderItems.add(orderItem);
+        }
+        
+        // Verify we have enough of each ingredient in inventory
+        for (Map.Entry<UUID, Float> entry : requiredIngredients.entrySet()) {
+            UUID itemStackId = entry.getKey();
+            float requiredAmount = entry.getValue();
+            
+            // Calculate available amount from inventory
+            float availableAmount = 0f;
+            for (Item item : server.getDataManager().getProductionDBSource().getAllItem()) {
+                if (item.getItemStackID().equals(itemStackId)) {
+                    availableAmount += item.getQuantity();
+                }
+            }
+            
+            if (availableAmount < requiredAmount) {
+                // Get the item stack name for a better error message
+                String itemName = "Unknown";
+                var itemStack = server.getDataManager().getProductionDBSource().getItemStack(itemStackId);
+                if (itemStack != null) {
+                    itemName = itemStack.getName();
+                }
+                
+                return new ServerResponse(
+                    ResponseCode.BAD_REQUEST, 
+                    new ErrorResponse("Insufficient inventory for ingredient: " + itemName + 
+                                     ". Required: " + requiredAmount + ", Available: " + availableAmount)
+                );
+            }
         }
 
         Order newOrder = new Order(

@@ -16,4 +16,5 @@ public class ProductResponse extends AbstractResponse {
     private final String unit;
     private final double price;
     private final List<Ingredient> ingredients;
+    private final int availableCount; // Number of products that can be made with current inventory
 }
