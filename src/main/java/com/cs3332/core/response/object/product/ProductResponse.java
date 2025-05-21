@@ -1,7 +1,6 @@
 package com.cs3332.core.response.object.product;
 
 import com.cs3332.core.response.constructor.AbstractResponse;
-import com.cs3332.data.object.storage.Ingredient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

@@ -9,7 +9,6 @@ import com.cs3332.core.payload.object.order.CreateOrderPayload;
 import com.cs3332.core.payload.object.order.OrderItemPayload;
 import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.response.object.order.OrderResponse;
-import com.cs3332.core.utils.Logger;
 import com.cs3332.core.utils.Utils;
 import com.cs3332.data.object.auth.UserInformation;
 import com.cs3332.data.object.order.Order;

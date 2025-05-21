@@ -10,7 +10,6 @@ import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.response.object.TextResponse;
 import com.cs3332.core.utils.Logger;
 import com.cs3332.core.utils.Response;
-import com.cs3332.core.utils.Utils;
 import com.cs3332.data.object.order.Order;
 import com.cs3332.data.object.order.OrderItem;
 import com.cs3332.data.object.order.OrderStatus;
@@ -46,8 +45,6 @@ public class UpdateOrderStatusHandler extends AbstractBodyHandler<UpdateOrderSta
             return new ServerResponse(ResponseCode.BAD_REQUEST, new ErrorResponse("Order ID is required. " +payload.toJSON()));
         }
 
-        OrderStatus orderStatus = OrderStatus.valueOf(payload.getNewStatus());
-
         if (payload.getNewStatus() == null) {
             return new ServerResponse(ResponseCode.BAD_REQUEST, new ErrorResponse("Status is Invalid. " +payload.toJSON()));
         }
@@ -58,10 +55,10 @@ public class UpdateOrderStatusHandler extends AbstractBodyHandler<UpdateOrderSta
         }
 
         // Check if we're transitioning to CONFIRMED status
-        boolean isConfirming = (orderStatus == OrderStatus.READY);
+        boolean isConfirming = payload.getNewStatus() == OrderStatus.READY;
 
         // Set the new status
-        order.setStatus(orderStatus);
+        order.setStatus(payload.getNewStatus());
         
         // If we're confirming the order, deduct from inventory
         if (isConfirming) {
