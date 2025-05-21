@@ -11,6 +11,8 @@ import java.util.UUID;
 public class ItemResponse extends AbstractResponse {
     private final UUID id;
     private final UUID itemStackID;
+    private final String ItemStackName;
+    private final String unit;
     private final long import_export_time;
     private final long expiration_date;
     private final double quantity;
