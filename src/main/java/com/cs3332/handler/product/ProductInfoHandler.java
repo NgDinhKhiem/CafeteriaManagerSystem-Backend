@@ -6,9 +6,11 @@ import com.cs3332.core.object.ResponseCode;
 import com.cs3332.core.object.ServerResponse;
 import com.cs3332.core.payload.object.product.ProductInfoPayload;
 import com.cs3332.core.response.object.ErrorResponse;
+import com.cs3332.core.response.object.product.IngredientResponse;
 import com.cs3332.core.response.object.product.ProductResponse;
 import com.cs3332.data.object.storage.Ingredient;
 import com.cs3332.data.object.storage.Item;
+import com.cs3332.data.object.storage.ItemStack;
 import com.cs3332.data.object.storage.Product;
 import com.cs3332.handler.constructor.AbstractBodyHandler;
 
@@ -31,8 +33,12 @@ public class ProductInfoHandler extends AbstractBodyHandler<ProductInfoPayload> 
         }
         Product product = server.getDataManager().getProductionDBSource().getProduct(payload.getProductID());
         if (product != null) {
-            List<Ingredient> ingredientResponses = product.getRecipe().stream()
-                    .map(ing -> new Ingredient(ing.getItemStackID(), ing.getQuantity()))
+            List<IngredientResponse> ingredientResponses = product.getRecipe().stream()
+                    .map(ing -> {
+                        ItemStack itemStack = server.getDataManager().getProductionDBSource().getItemStack(ing.getItemStackID());
+                        return new IngredientResponse
+                                (ing.getItemStackID(), itemStack.getName(), itemStack.getUnit(), ing.getQuantity());
+                    })
                     .collect(Collectors.toList());
             
             // Calculate available product count based on ingredients
