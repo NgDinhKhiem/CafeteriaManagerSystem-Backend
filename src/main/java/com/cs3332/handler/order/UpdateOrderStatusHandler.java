@@ -8,6 +8,7 @@ import com.cs3332.core.object.ServerResponse;
 import com.cs3332.core.payload.object.order.UpdateOrderStatusPayload;
 import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.response.object.TextResponse;
+import com.cs3332.core.utils.Logger;
 import com.cs3332.core.utils.Response;
 import com.cs3332.core.utils.Utils;
 import com.cs3332.data.object.order.Order;
@@ -42,7 +43,13 @@ public class UpdateOrderStatusHandler extends AbstractBodyHandler<UpdateOrderSta
         }
 
         if (payload.getOrderID() == null) {
-            return new ServerResponse(ResponseCode.BAD_REQUEST, new ErrorResponse("Order ID is required."));
+            return new ServerResponse(ResponseCode.BAD_REQUEST, new ErrorResponse("Order ID is required. " +payload.toJSON()));
+        }
+
+        OrderStatus orderStatus = OrderStatus.valueOf(payload.getNewStatus());
+
+        if (payload.getNewStatus() == null) {
+            return new ServerResponse(ResponseCode.BAD_REQUEST, new ErrorResponse("Status is Invalid. " +payload.toJSON()));
         }
 
         Order order = server.getDataManager().getProductionDBSource().getOrder(payload.getOrderID());
@@ -51,15 +58,16 @@ public class UpdateOrderStatusHandler extends AbstractBodyHandler<UpdateOrderSta
         }
 
         // Check if we're transitioning to CONFIRMED status
-        boolean isConfirming = payload.getNewStatus() == OrderStatus.READY;
+        boolean isConfirming = (orderStatus == OrderStatus.READY);
 
         // Set the new status
-        order.setStatus(payload.getNewStatus());
+        order.setStatus(orderStatus);
         
         // If we're confirming the order, deduct from inventory
         if (isConfirming) {
             ServerResponse deductionResponse = deductIngredientsFromInventory(order);
             if (deductionResponse != null) {
+                Logger.warn("ERROR IN DEDUCTION: " + deductionResponse.getResponse());
                 return deductionResponse;
             }
         }

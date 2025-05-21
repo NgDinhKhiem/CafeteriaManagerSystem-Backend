@@ -130,6 +130,7 @@ public abstract class AbstractHandler implements HttpHandler {
 
         ServerResponse serverResponse = resolve();
         String responseBody = serverResponse.getResponse().toJSON();
+
         byte[] responseBytes = responseBody.getBytes(StandardCharsets.UTF_8);
 
         exchange.sendResponseHeaders(serverResponse.getCode().getCode(), responseBytes.length);

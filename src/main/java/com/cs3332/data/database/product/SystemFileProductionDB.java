@@ -223,6 +223,6 @@ public class SystemFileProductionDB implements ProductionDBSource {
             return new Response("Order not found!");
         orders.put(orderID, order);
         save();
-        return null;
+        return new Response();
     }
 }

@@ -31,29 +31,19 @@ public class CreateOrderHandler extends AbstractBodyHandler<CreateOrderPayload> 
 
     @Override
     protected ServerResponse resolve() {
-        Logger.debug("CALASD");
         UserInformation requester = dataManager.getAccountInformation(token);
         if (requester == null) {
             return new ServerResponse(ResponseCode.UNAUTHORIZED, new ErrorResponse("Invalid token."));
         }
-
-        Logger.debug("CALASD2");
-
 
         List<Role> roles = dataManager.getRole(token);
         if (!roles.contains(Role.CASHIER) && !roles.contains(Role.BARTENDER) && !roles.contains(Role.MANAGER) && !roles.contains(Role.ADMIN)) {
             return new ServerResponse(ResponseCode.UNAUTHORIZED, new ErrorResponse("You do not have permission to create an order."));
         }
 
-        Logger.debug("CALASD2.5");
-
-
         if (payload.getItems() == null || payload.getItems().isEmpty()) {
             return new ServerResponse(ResponseCode.BAD_REQUEST, new ErrorResponse("Order must contain at least one item."));
         }
-
-        Logger.debug("CALASD3");
-
 
         List<OrderItem> orderItems = new ArrayList<>();
         

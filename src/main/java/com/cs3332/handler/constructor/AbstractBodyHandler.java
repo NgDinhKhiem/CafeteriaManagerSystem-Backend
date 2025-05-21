@@ -46,7 +46,7 @@ public abstract class AbstractBodyHandler<V extends AbstractRequestBody> extends
 
         try {
             this.payload = AbstractRequestBody.deserialize(body, payloadClass);
-        }catch (JsonSyntaxException e){
+        }catch (Exception e){
             Logger.error(e.getMessage());
         }
 

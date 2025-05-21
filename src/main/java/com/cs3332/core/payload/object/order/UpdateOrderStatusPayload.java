@@ -11,9 +11,8 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class UpdateOrderStatusPayload extends AbstractRequestBody {
     private UUID orderID;
-    private OrderStatus newStatus;
+    private String newStatus;
 } 
