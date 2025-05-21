@@ -12,4 +12,5 @@ public class ItemStackResponse extends AbstractResponse {
     private final UUID id;
     private final String name;
     private final String unit;
+    private final double quantity;
 }

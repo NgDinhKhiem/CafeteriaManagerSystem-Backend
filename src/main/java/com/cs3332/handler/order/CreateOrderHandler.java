@@ -123,16 +123,7 @@ public class CreateOrderHandler extends AbstractBodyHandler<CreateOrderPayload> 
         }
 
         OrderResponse response = new OrderResponse(
-                createdOrder.getTableID(),
-                createdOrder.getOrderID(),
-                createdOrder.getItems(),
-                createdOrder.getOrderTimestamp(),
-                createdOrder.getStatus(),
-                createdOrder.getUserID(),
-                createdOrder.getPaymentTimestamp(),
-                createdOrder.getPreparationStartTimestamp(),
-                createdOrder.getReadyTimestamp(),
-                createdOrder.getPreparedBy()
+                createdOrder
         );
 
         return new ServerResponse(ResponseCode.CREATED, response);

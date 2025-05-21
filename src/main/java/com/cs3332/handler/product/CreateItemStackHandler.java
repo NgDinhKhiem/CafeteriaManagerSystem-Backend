@@ -8,9 +8,11 @@ import com.cs3332.core.object.ServerResponse;
 import com.cs3332.core.payload.object.product.CreateItemStackPayload;
 import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.response.object.product.ItemStackResponse;
+import com.cs3332.data.object.storage.Item;
 import com.cs3332.data.object.storage.ItemStack;
 import com.cs3332.handler.constructor.AbstractBodyHandler;
 
+import java.util.List;
 import java.util.UUID;
 
 public class CreateItemStackHandler extends AbstractBodyHandler<CreateItemStackPayload> {
@@ -35,7 +37,14 @@ public class CreateItemStackHandler extends AbstractBodyHandler<CreateItemStackP
         ItemStack created = server.getDataManager().getProductionDBSource().createItemStack(itemStack);
 
         if (created != null) {
-            return new ServerResponse(ResponseCode.CREATED, new ItemStackResponse(created.getID(), created.getName(), created.getUnit()));
+            List<Item> items = server.getDataManager().getProductionDBSource().getItemByID(created.getID());
+            double quantity = 0;
+            for (Item item : items) {
+                quantity += item.getQuantity();
+            }
+            return new ServerResponse(ResponseCode.CREATED, new ItemStackResponse(
+                    created.getID(), created.getName(), created.getUnit(), quantity
+            ));
         } else {
             return new ServerResponse(ResponseCode.INTERNAL_SERVER_ERROR, new ErrorResponse("Failed to create ItemStack"));
         }

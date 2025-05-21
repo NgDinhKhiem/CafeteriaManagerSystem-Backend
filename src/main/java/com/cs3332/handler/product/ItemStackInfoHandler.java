@@ -7,8 +7,11 @@ import com.cs3332.core.object.ServerResponse;
 import com.cs3332.core.payload.object.product.ItemStackInfoPayload;
 import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.response.object.product.ItemStackResponse;
+import com.cs3332.data.object.storage.Item;
 import com.cs3332.data.object.storage.ItemStack;
 import com.cs3332.handler.constructor.AbstractBodyHandler;
+
+import java.util.List;
 
 public class ItemStackInfoHandler extends AbstractBodyHandler<ItemStackInfoPayload> {
     private String token;
@@ -24,7 +27,12 @@ public class ItemStackInfoHandler extends AbstractBodyHandler<ItemStackInfoPaylo
         }
         ItemStack itemStack = server.getDataManager().getProductionDBSource().getItemStack(payload.getItemStackID());
         if (itemStack != null) {
-            return new ServerResponse(ResponseCode.FOUND, new ItemStackResponse(itemStack.getID(), itemStack.getName(), itemStack.getUnit()));
+            List<Item> items = server.getDataManager().getProductionDBSource().getItemByID(itemStack.getID());
+            double quantity = 0;
+            for (Item item : items) {
+                quantity += item.getQuantity();
+            }
+            return new ServerResponse(ResponseCode.FOUND, new ItemStackResponse(itemStack.getID(), itemStack.getName(), itemStack.getUnit(), quantity));
         } else {
             return new ServerResponse(ResponseCode.NOT_FOUND, new ErrorResponse("ItemStack not found"));
         }

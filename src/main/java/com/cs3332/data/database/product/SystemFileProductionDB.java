@@ -126,6 +126,14 @@ public class SystemFileProductionDB implements ProductionDBSource {
     }
 
     @Override
+    public List<Item> getItemByID(UUID... itemIDs) {
+        List<UUID> filter = Arrays.asList(itemIDs);
+        List<Item> stash = new ArrayList<>();
+        this.items.values().forEach(item -> {if(filter.contains(item.getItemStackID())) stash.add(item);});
+        return stash;
+    }
+
+    @Override
     public String removeProduct(UUID productID) {
         if (!products.containsKey(productID)) return "Product not found.";
         products.remove(productID);

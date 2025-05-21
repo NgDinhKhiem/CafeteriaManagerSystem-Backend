@@ -20,6 +20,7 @@ public interface ProductionDBSource extends DBSource{
     Product createProduct(Product product);
     Product getProduct(UUID productID);
     List<Product> getAllProduct();
+    List<Item> getItemByID(UUID... itemIDs);
     String removeProduct(UUID productID);
     Response importItem(Item item);
     Response exportItem(Item item);

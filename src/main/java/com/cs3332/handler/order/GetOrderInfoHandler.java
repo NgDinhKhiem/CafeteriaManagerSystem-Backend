@@ -8,6 +8,7 @@ import com.cs3332.core.object.ServerResponse;
 import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.response.object.order.OrderResponse;
 import com.cs3332.data.object.order.Order;
+import com.cs3332.data.object.order.OrderItem;
 import com.cs3332.handler.constructor.AbstractHandler;
 
 import java.util.UUID;
@@ -33,16 +34,7 @@ public class GetOrderInfoHandler extends AbstractHandler {
         }
 
         OrderResponse response = new OrderResponse(
-                order.getTableID(),
-                order.getOrderID(),
-                order.getItems(),
-                order.getOrderTimestamp(),
-                order.getStatus(),
-                order.getUserID(),
-                order.getPaymentTimestamp(),
-                order.getPreparationStartTimestamp(),
-                order.getReadyTimestamp(),
-                order.getPreparedBy()
+               order
         );
 
         return new ServerResponse(ResponseCode.FOUND, response);

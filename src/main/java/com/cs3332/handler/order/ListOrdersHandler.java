@@ -10,6 +10,7 @@ import com.cs3332.core.response.object.order.OrderListResponse;
 import com.cs3332.core.response.object.order.OrderResponse;
 import com.cs3332.core.utils.Logger;
 import com.cs3332.data.object.order.Order;
+import com.cs3332.data.object.order.OrderItem;
 import com.cs3332.data.object.order.OrderStatus;
 import com.cs3332.handler.constructor.AbstractHandler;
 
@@ -58,19 +59,9 @@ public class ListOrdersHandler extends AbstractHandler {
                 return new ServerResponse(ResponseCode.FOUND, new OrderListResponse(List.of()));
             }
 
+
             List<OrderResponse> orderResponses = orders.stream()
-                    .map(order -> new OrderResponse(
-                            order.getTableID(),
-                            order.getOrderID(),
-                            order.getItems(),
-                            order.getOrderTimestamp(),
-                            order.getStatus(),
-                            order.getUserID(),
-                            order.getPaymentTimestamp(),
-                            order.getPreparationStartTimestamp(),
-                            order.getReadyTimestamp(),
-                            order.getPreparedBy()
-                    ))
+                    .map(OrderResponse::new)
                     .collect(Collectors.toList());
 
             return new ServerResponse(ResponseCode.FOUND, new OrderListResponse(orderResponses));
