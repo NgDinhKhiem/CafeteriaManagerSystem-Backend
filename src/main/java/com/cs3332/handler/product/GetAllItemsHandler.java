@@ -1,6 +1,7 @@
 package com.cs3332.handler.product;
 
 import com.cs3332.Server;
+import com.cs3332.core.object.OptionalParam;
 import com.cs3332.core.object.RequestMethod;
 import com.cs3332.core.object.ResponseCode;
 import com.cs3332.core.object.ServerResponse;
@@ -14,6 +15,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class GetAllItemsHandler extends AbstractHandler {
+    @OptionalParam
+    private Long from;
+    @OptionalParam
+    private Long to;
+    @OptionalParam
+    private Boolean isExport;
     public GetAllItemsHandler(Server server) {
         super(server, RequestMethod.GET);
     }
@@ -36,6 +43,18 @@ public class GetAllItemsHandler extends AbstractHandler {
                             i.getReason());
                 })
                 .collect(Collectors.toList());
+        if(from!=null){
+            responses.removeIf(s->s.getImport_export_time()<from);
+        }
+        if(to!=null){
+            responses.removeIf(s->s.getImport_export_time()>to);
+        }
+        if(isExport!=null){
+            if(isExport)
+                responses.removeIf(s->s.getQuantity()>0);
+            else
+                responses.removeIf(s->s.getQuantity()<0);
+        }
         return new ServerResponse(ResponseCode.FOUND, new ItemListResponse(responses));
     }
 }
