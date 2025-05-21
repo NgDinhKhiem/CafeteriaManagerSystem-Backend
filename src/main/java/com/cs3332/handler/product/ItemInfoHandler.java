@@ -8,6 +8,7 @@ import com.cs3332.core.payload.object.product.ItemInfoPayload;
 import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.response.object.product.ItemResponse;
 import com.cs3332.data.object.storage.Item;
+import com.cs3332.data.object.storage.ItemStack;
 import com.cs3332.handler.constructor.AbstractBodyHandler;
 
 public class ItemInfoHandler extends AbstractBodyHandler<ItemInfoPayload> {
@@ -21,10 +22,19 @@ public class ItemInfoHandler extends AbstractBodyHandler<ItemInfoPayload> {
             return new ServerResponse(ResponseCode.BAD_REQUEST, new ErrorResponse("Item ID is required."));
         }
         Item item = server.getDataManager().getProductionDBSource().getItemInfo(payload.getItemID());
+        ItemStack itemStack = server.getDataManager().getProductionDBSource().getItemStack(item.getItemStackID());
         if (item != null) {
             return new ServerResponse(ResponseCode.FOUND,
-                    new ItemResponse(item.getEntryID(), item.getItemStackID(),
-                    item.getImportExportDate(), item.getExpiration_date(), item.getQuantity(),item.getSupplier()));
+                    new ItemResponse(
+                            item.getEntryID(),
+                            item.getItemStackID(),
+                            itemStack.getName(),
+                            itemStack.getUnit(),
+                            item.getImportExportDate(),
+                            item.getExpiration_date(),
+                            item.getQuantity(),
+                            item.getSupplier(),
+                            item.getReason()));
         } else {
             return new ServerResponse(ResponseCode.NOT_FOUND, new ErrorResponse("Item not found"));
         }

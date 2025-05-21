@@ -14,5 +14,6 @@ public class Item {
     private final long expiration_date;
     private final float quantity;
     private final String supplier;
+    private final String reason;
 }
 

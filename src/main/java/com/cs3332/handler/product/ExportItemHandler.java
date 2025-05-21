@@ -44,6 +44,7 @@ public class ExportItemHandler extends AbstractBodyHandler<IEItemPayload> {
                 Utils.getTime(),
                 -1,
                 payload.getQuantity(),
+                payload.getSupplier(),
                 payload.getReason()
         );
         Response response = server.getDataManager().getProductionDBSource().exportItem(item);

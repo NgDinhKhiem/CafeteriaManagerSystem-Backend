@@ -137,32 +137,22 @@ public class UpdateOrderStatusHandler extends AbstractBodyHandler<UpdateOrderSta
                         item.getEntryID(),
                         item.getImportExportDate(),
                         item.getExpiration_date(),
-                        item.getQuantity() - amountToDeduct,
-                        item.getSupplier()
+                            - amountToDeduct,
+                        item.getSupplier(),
+                            item.getReason()
                     );
                     
-                    // Remove old item
-                    Response deleteResponse = server.getDataManager().getProductionDBSource().deleteIOItem(item.getEntryID());
-                    if (!deleteResponse.getState()) {
-                        return new ServerResponse(ResponseCode.INTERNAL_SERVER_ERROR, 
-                            new ErrorResponse("Failed to update item: " + deleteResponse.getResponse()));
-                    }
-                    
                     // Add updated item
-                    Response importResponse = server.getDataManager().getProductionDBSource().importItem(updatedItem);
+                    Response importResponse = server.getDataManager().getProductionDBSource().exportItem(updatedItem);
                     if (!importResponse.getState()) {
                         return new ServerResponse(ResponseCode.INTERNAL_SERVER_ERROR, 
                             new ErrorResponse("Failed to update item: " + importResponse.getResponse()));
                     }
-                    
-                    amountToDeduct = 0;
                     break;
                 }
             }
             
-            if (amountToDeduct > 0) {
-                // This shouldn't happen since we checked availability at order creation,
-                // but handle the case for robustness
+            /*if (amountToDeduct > 0) {
                 String itemName = "Unknown";
                 var itemStack = server.getDataManager().getProductionDBSource().getItemStack(itemStackId);
                 if (itemStack != null) {
@@ -171,7 +161,7 @@ public class UpdateOrderStatusHandler extends AbstractBodyHandler<UpdateOrderSta
                 
                 return new ServerResponse(ResponseCode.INTERNAL_SERVER_ERROR, 
                     new ErrorResponse("Insufficient inventory for " + itemName + " when confirming order."));
-            }
+            }*/
         }
         
         return null; // Success

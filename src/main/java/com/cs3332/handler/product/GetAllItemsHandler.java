@@ -32,7 +32,8 @@ public class GetAllItemsHandler extends AbstractHandler {
                             i.getImportExportDate(),
                             i.getExpiration_date(),
                             i.getQuantity(),
-                            i.getSupplier());
+                            i.getSupplier(),
+                            i.getReason());
                 })
                 .collect(Collectors.toList());
         return new ServerResponse(ResponseCode.FOUND, new ItemListResponse(responses));

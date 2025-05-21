@@ -44,6 +44,7 @@ public class ImportItemHandler extends AbstractBodyHandler<IEItemPayload> {
                 Utils.getTime(), // import time
                 -1,
                 payload.getQuantity(),
+                payload.getSupplier(),
                 payload.getReason()
         );
         Response response = server.getDataManager().getProductionDBSource().importItem(item);

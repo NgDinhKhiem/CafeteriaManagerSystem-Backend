@@ -7,9 +7,11 @@ import com.cs3332.core.object.Role;
 import com.cs3332.core.object.ServerResponse;
 import com.cs3332.core.payload.object.product.CreateProductPayload;
 import com.cs3332.core.response.object.ErrorResponse;
+import com.cs3332.core.response.object.product.IngredientResponse;
 import com.cs3332.core.response.object.product.ProductResponse;
 import com.cs3332.data.object.storage.Ingredient;
 import com.cs3332.data.object.storage.Item;
+import com.cs3332.data.object.storage.ItemStack;
 import com.cs3332.data.object.storage.Product;
 import com.cs3332.handler.constructor.AbstractBodyHandler;
 
@@ -64,8 +66,11 @@ public class CreateProductHandler extends AbstractBodyHandler<CreateProductPaylo
         Product created = server.getDataManager().getProductionDBSource().createProduct(product);
 
         if (created != null) {
-            List<Ingredient> ingredientResponses = created.getRecipe().stream()
-                    .map(ing -> new Ingredient(ing.getItemStackID(), ing.getQuantity()))
+            List<IngredientResponse> ingredientResponses = created.getRecipe().stream()
+                    .map(ing -> {
+                        ItemStack itemStack = server.getDataManager().getProductionDBSource().getItemStack(ing.getItemStackID());
+                        return new IngredientResponse(ing.getItemStackID(), itemStack.getName(), itemStack.getUnit(), ing.getQuantity());
+                    })
                     .collect(Collectors.toList());
             return new ServerResponse(ResponseCode.CREATED, new ProductResponse(
                     created.getID(),

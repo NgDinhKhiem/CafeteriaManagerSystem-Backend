@@ -16,5 +16,6 @@ public class ItemResponse extends AbstractResponse {
     private final long import_export_time;
     private final long expiration_date;
     private final double quantity;
+    private final String reason;
     private final String supplier;
 }

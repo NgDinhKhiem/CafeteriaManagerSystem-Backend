@@ -4,10 +4,12 @@ import com.cs3332.Server;
 import com.cs3332.core.object.RequestMethod;
 import com.cs3332.core.object.ResponseCode;
 import com.cs3332.core.object.ServerResponse;
+import com.cs3332.core.response.object.product.IngredientResponse;
 import com.cs3332.core.response.object.product.ProductListResponse;
 import com.cs3332.core.response.object.product.ProductResponse;
 import com.cs3332.data.object.storage.Ingredient;
 import com.cs3332.data.object.storage.Item;
+import com.cs3332.data.object.storage.ItemStack;
 import com.cs3332.data.object.storage.Product;
 import com.cs3332.handler.constructor.AbstractHandler;
 
@@ -25,10 +27,10 @@ public class GetAllProductsHandler extends AbstractHandler {
     @Override
     protected ServerResponse resolve() {
         List<Product> products = server.getDataManager().getProductionDBSource().getAllProduct();
-        
+
         // Calculate available ingredient quantities once for all products
         Map<UUID, Float> availableIngredients = calculateAvailableIngredients();
-        
+
         List<ProductResponse> responses = products.stream()
                 .map(product -> new ProductResponse(
                         product.getID(),
@@ -36,7 +38,10 @@ public class GetAllProductsHandler extends AbstractHandler {
                         product.getUnit(),
                         product.getPrice(),
                         product.getRecipe().stream()
-                                .map(ing -> new Ingredient(ing.getItemStackID(), ing.getQuantity()))
+                                .map(ing -> {
+                                    ItemStack itemStack = server.getDataManager().getProductionDBSource().getItemStack(ing.getItemStackID());
+                                    return new IngredientResponse(ing.getItemStackID(), itemStack.getName(), itemStack.getUnit(), ing.getQuantity());
+                                })
                                 .collect(Collectors.toList()),
                         calculateAvailableProductCount(product, availableIngredients)
                 ))
