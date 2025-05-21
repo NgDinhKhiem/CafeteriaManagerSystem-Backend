@@ -8,6 +8,7 @@ import com.cs3332.core.object.ServerResponse;
 import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.response.object.order.OrderListResponse;
 import com.cs3332.core.response.object.order.OrderResponse;
+import com.cs3332.core.utils.Logger;
 import com.cs3332.data.object.order.Order;
 import com.cs3332.data.object.order.OrderStatus;
 import com.cs3332.handler.constructor.AbstractHandler;
@@ -22,9 +23,9 @@ public class ListOrdersHandler extends AbstractHandler {
     @OptionalParam
     private OrderStatus orderStatus;
     @OptionalParam
-    private long from;
+    private Long from;
     @OptionalParam
-    private long to;
+    private Long to;
 
     public ListOrdersHandler(Server server) {
         super(server, RequestMethod.GET);
