@@ -49,7 +49,15 @@ public class ListOrdersHandler extends AbstractHandler {
         }*/
 
         try {
-            List<Order> orders = server.getDataManager().getProductionDBSource().getOrders(tableID, orderStatus, from.longValue(), to.longValue());
+            Long from = null;
+            Long to = null;
+            if(this.from != null) {
+                from = this.from.longValue();
+            }
+            if(this.to != null) {
+                to = this.to.longValue();
+            }
+            List<Order> orders = server.getDataManager().getProductionDBSource().getOrders(tableID, orderStatus, from, to);
 
             if (orders == null) {
                 return new ServerResponse(ResponseCode.NOT_FOUND, new OrderListResponse(List.of()));
