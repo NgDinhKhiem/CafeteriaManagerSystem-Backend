@@ -109,7 +109,7 @@ public class CreateOrderHandler extends AbstractBodyHandler<CreateOrderPayload> 
                 UUID.randomUUID(),
                 orderItems,
                 Utils.getTime(),
-                OrderStatus.PENDING_CONFIRMATION,
+                payload.isApproved()?OrderStatus.PENDING_PAYMENT:OrderStatus.PENDING_CONFIRMATION,
                 requester.getUsername(),
                 0L,
                 0L,
