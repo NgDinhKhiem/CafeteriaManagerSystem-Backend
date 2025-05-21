@@ -204,12 +204,16 @@ public class SystemFileProductionDB implements ProductionDBSource {
     }
 
     @Override
-    public List<Order> getOrders(@Nullable String tableID, @Nullable OrderStatus status) {
+    public List<Order> getOrders(@Nullable String tableID, @Nullable OrderStatus status, @Nullable Long from, @Nullable Long to) {
         List<Order> or = new ArrayList<>(orders.values());
         if(tableID!=null)
             or.removeIf(s-> !Objects.equals(tableID, s.getTableID()));
         if(status!=null)
             or.removeIf(s-> !Objects.equals(status, s.getStatus()));
+        if(from!=null)
+            or.removeIf(s-> s.getOrderTimestamp()<from);
+        if(to!=null)
+            or.removeIf(s-> s.getOrderTimestamp()>to);
         return or;
     }
 

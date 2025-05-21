@@ -5,6 +5,7 @@ import com.cs3332.core.object.RequestMethod;
 import com.cs3332.core.object.ResponseCode;
 import com.cs3332.core.payload.AbstractRequestBody;
 import com.cs3332.core.utils.Logger;
+import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.BufferedReader;
@@ -43,7 +44,12 @@ public abstract class AbstractBodyHandler<V extends AbstractRequestBody> extends
             return;
         }
 
-        this.payload = AbstractRequestBody.deserialize(body, payloadClass);
+        try {
+            this.payload = AbstractRequestBody.deserialize(body, payloadClass);
+        }catch (JsonSyntaxException e){
+            Logger.error(e.getMessage());
+        }
+
         super.handle(exchange);
     }
 }

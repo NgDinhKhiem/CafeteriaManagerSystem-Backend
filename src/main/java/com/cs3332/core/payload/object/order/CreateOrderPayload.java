@@ -12,6 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 public class CreateOrderPayload extends AbstractRequestBody {
     private List<OrderItemPayload> items;
-    private final String tableID;
-    private final boolean approved;
+    private String tableID;
+    private boolean approved;
 }

@@ -21,6 +21,10 @@ public class ListOrdersHandler extends AbstractHandler {
     private String tableID;
     @OptionalParam
     private OrderStatus orderStatus;
+    @OptionalParam
+    private long from;
+    @OptionalParam
+    private long to;
 
     public ListOrdersHandler(Server server) {
         super(server, RequestMethod.GET);
@@ -43,10 +47,14 @@ public class ListOrdersHandler extends AbstractHandler {
         }*/
 
         try {
-            List<Order> orders = server.getDataManager().getProductionDBSource().getOrders(tableID, orderStatus);
+            List<Order> orders = server.getDataManager().getProductionDBSource().getOrders(tableID, orderStatus, from, to);
 
-            if (orders == null || orders.isEmpty()) {
+            if (orders == null) {
                 return new ServerResponse(ResponseCode.NOT_FOUND, new OrderListResponse(List.of()));
+            }
+
+            if (orders.isEmpty()) {
+                return new ServerResponse(ResponseCode.FOUND, new OrderListResponse(List.of()));
             }
 
             List<OrderResponse> orderResponses = orders.stream()

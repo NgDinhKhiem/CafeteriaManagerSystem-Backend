@@ -51,7 +51,7 @@ public class UpdateOrderStatusHandler extends AbstractBodyHandler<UpdateOrderSta
         }
 
         // Check if we're transitioning to CONFIRMED status
-        boolean isConfirming = order.getStatus() != OrderStatus.PAID && payload.getNewStatus() == OrderStatus.PAID;
+        boolean isConfirming = payload.getNewStatus() == OrderStatus.READY;
 
         // Set the new status
         order.setStatus(payload.getNewStatus());

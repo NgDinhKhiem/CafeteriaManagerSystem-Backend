@@ -35,7 +35,7 @@ public interface ProductionDBSource extends DBSource{
 
     List<Order> getAllOrders();
 
-    List<Order> getOrders(@Nullable String tableID, @Nullable OrderStatus status);
+    List<Order> getOrders(@Nullable String tableID, @Nullable OrderStatus status, @Nullable Long from, @Nullable Long to);
 
     Response updateOrderInformation(UUID orderID, Order order);
 }

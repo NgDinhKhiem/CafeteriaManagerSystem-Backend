@@ -58,9 +58,15 @@ public class DataManager{
         if(!isValidToken(token))
             return null;
         if(token.equals("FULL_ACCESS_TOKEN")) {
-            UserInformation userInformation = this.authenticationSource.getUserInformation(sectionTokenHolder.get(token));
-            userInformation.getRoles().add(Role.MANAGER.name());
-            userInformation.getRoles().add(Role.ADMIN.name());
+            UserInformation userInformation = new UserInformation(
+                    "Console",
+                    "Console",
+                    "email@console.com",
+                    "123",
+                    0L,
+                    "Male",
+                    List.of(Role.MANAGER,Role.ADMIN, Role.STORAGE_MANAGER).stream().map(s->s.name()).toList()
+            );
             return userInformation;
         }
         return this.authenticationSource.getUserInformation(sectionTokenHolder.get(token));

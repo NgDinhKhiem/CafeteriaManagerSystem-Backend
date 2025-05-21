@@ -71,7 +71,15 @@ public abstract class AbstractHandler implements HttpHandler {
 
         Logger.info("Handling request for URI: {} with handler {}", exchange.getRequestURI(), this.getClass().getSimpleName());
 
-        if (queryParams.size() != paramFields.size()) {
+
+        int count = 0;
+
+        for (Field optionalParamField : optionalParamFields) {
+            if(queryParams.containsKey(optionalParamField.getName()))
+                count++;
+        }
+
+        if (queryParams.size()-count != paramFields.size()) {
             Logger.warn("Query param size mismatch. Provided: {}, Expected: {}", queryParams.size(), paramFields.size());
             Logger.debug("Provided Params: {}", String.join(", ", queryParams.keySet()));
             Logger.debug("Expected Fields: {}", paramFields.stream().map(Field::getName).collect(Collectors.joining(", ")));
