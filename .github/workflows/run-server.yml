@@ -28,10 +28,7 @@ jobs:
       - name: Start Backend JAR
         working-directory: ./app
         run: |
-          nohup java -Xmx512M -Xms256M -jar CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar > backend.log 2>&1 &
-
-      - name: Wait for server to start
-        run: sleep 15
+          java -Xmx512M -Xms256M -jar CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar
 
       - name: Install and configure ngrok
         run: |
@@ -41,9 +38,6 @@ jobs:
 
           ngrok config add-authtoken "$NGROK_AUTHTOKEN"
           nohup ngrok http --domain="$NGROK_DOMAIN" 8080 > ngrok.log 2>&1 &
-
-      - name: Wait for ngrok tunnel
-        run: sleep 10
 
       - name: POST /test through ngrok public URL
         run: |
@@ -64,8 +58,8 @@ jobs:
       - name: Keep the server running for 2 hours
         run: |
           echo "Server and ngrok tunnel running at https://${NGROK_DOMAIN}"
-          echo "Keeping alive for 2 hours..."
-          sleep 7200
+          echo "Keeping alive for 4 hours..."
+          sleep 14400
 
       - name: View backend logs (on completion or failure)
         if: always()
