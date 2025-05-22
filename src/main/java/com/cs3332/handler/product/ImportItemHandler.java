@@ -42,7 +42,7 @@ public class ImportItemHandler extends AbstractBodyHandler<IEItemPayload> {
                 itemStack.getID(),
                 UUID.randomUUID(),
                 Utils.getTime(), // import time
-                -1,
+                payload.getExpirationDate(),
                 payload.getQuantity(),
                 payload.getSupplier(),
                 payload.getReason()

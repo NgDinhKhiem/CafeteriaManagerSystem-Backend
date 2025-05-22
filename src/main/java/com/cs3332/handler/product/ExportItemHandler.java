@@ -43,7 +43,7 @@ public class ExportItemHandler extends AbstractBodyHandler<IEItemPayload> {
                 UUID.randomUUID(),
                 Utils.getTime(),
                 -1,
-                payload.getQuantity(),
+                -payload.getQuantity(),
                 payload.getSupplier(),
                 payload.getReason()
         );

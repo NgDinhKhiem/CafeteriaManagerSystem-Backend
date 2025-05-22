@@ -12,6 +12,7 @@ import java.util.UUID;
 public class IEItemPayload extends AbstractRequestBody {
     private UUID itemStackID;
     private float quantity;
+    private long expirationDate;
     private String supplier;
     private String reason;
 }

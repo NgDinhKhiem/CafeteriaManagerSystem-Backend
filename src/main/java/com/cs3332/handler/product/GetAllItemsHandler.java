@@ -7,6 +7,7 @@ import com.cs3332.core.object.ResponseCode;
 import com.cs3332.core.object.ServerResponse;
 import com.cs3332.core.response.object.product.ItemListResponse;
 import com.cs3332.core.response.object.product.ItemResponse;
+import com.cs3332.core.utils.Utils;
 import com.cs3332.data.object.storage.Item;
 import com.cs3332.data.object.storage.ItemStack;
 import com.cs3332.handler.constructor.AbstractHandler;
@@ -21,6 +22,8 @@ public class GetAllItemsHandler extends AbstractHandler {
     private Long to;
     @OptionalParam
     private Boolean isExport;
+    @OptionalParam
+    private Boolean isExpired;
     public GetAllItemsHandler(Server server) {
         super(server, RequestMethod.GET);
     }
@@ -54,6 +57,12 @@ public class GetAllItemsHandler extends AbstractHandler {
                 responses.removeIf(s->s.getQuantity()>0);
             else
                 responses.removeIf(s->s.getQuantity()<0);
+        }
+        if(isExpired!=null){
+            if(isExpired)
+                responses.removeIf(s->s.getExpiration_date()>Utils.getTime());
+            else
+                responses.removeIf(s->s.getExpiration_date()<Utils.getTime());
         }
         return new ServerResponse(ResponseCode.FOUND, new ItemListResponse(responses));
     }
