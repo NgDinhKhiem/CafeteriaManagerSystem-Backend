@@ -1,0 +1,19 @@
+name: Run CafeteriaManagerSystem Backend
+
+on:
+  workflow_dispatch:  # Manual trigger from GitHub UI
+
+jobs:
+  run-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download CafeteriaManagerSystem JAR
+        run: |
+          echo "Downloading CafeteriaManagerSystem-Backend..."
+          curl -L -o app.jar https://github.com/NgDinhKhiem/CafeteriaManagerSystem-Backend/releases/download/v1.0.0/CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar
+
+      - name: Run the Backend JAR
+        run: |
+          echo "Starting application..."
+          java -Xmx512M -Xms256M -jar app.jar
