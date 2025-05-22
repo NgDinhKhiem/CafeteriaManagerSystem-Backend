@@ -30,6 +30,9 @@ jobs:
         run: |
           nohup java -Xmx512M -Xms256M -jar CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar > backend.log 2>&1 &
 
+      - name: Wait for server to start
+        run: sleep 2
+
       - name: Install and configure ngrok
         run: |
           curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
@@ -38,6 +41,10 @@ jobs:
 
           ngrok config add-authtoken "$NGROK_AUTHTOKEN"
           nohup ngrok http --domain="$NGROK_DOMAIN" 8080 > ngrok.log 2>&1 &
+
+      - name: Wait for ngrok tunnel
+        run: sleep 10
+
       - name: POST /test through ngrok public URL
         run: |
           echo "Sending POST request to https://${NGROK_DOMAIN}/test"
@@ -54,7 +61,7 @@ jobs:
             exit 1
           fi
 
-      - name: Stream backend logs live for 2 hours (7200 seconds)
+      - name: Stream backend logs live for 4 hours (14400 seconds)
         run: |
-          echo "Streaming backend logs live for 4 hours. Press Ctrl+C to stop."
+          echo "Streaming backend logs live for 2 hours. Press Ctrl+C to stop."
           timeout 14400 tail -f app/backend.log || true
