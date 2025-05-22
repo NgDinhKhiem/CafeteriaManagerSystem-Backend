@@ -1,6 +1,7 @@
 package com.cs3332.handler.product;
 
 import com.cs3332.Server;
+import com.cs3332.core.object.Param;
 import com.cs3332.core.object.RequestMethod;
 import com.cs3332.core.object.ResponseCode;
 import com.cs3332.core.object.ServerResponse;
@@ -22,6 +23,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ProductInfoHandler extends AbstractHandler {
+    @Param
     private UUID productID;
     public ProductInfoHandler(Server server) {
         super(server, RequestMethod.GET);
