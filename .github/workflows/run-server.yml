@@ -7,7 +7,7 @@ on:
 
 jobs:
   run-backend:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     timeout-minutes: 125  # Safety margin over 120 mins
 
     env:
