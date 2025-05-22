@@ -56,7 +56,8 @@ public abstract class AbstractHandler implements HttpHandler {
                         return;
                     }
                     paramField.set(this, token);
-                } catch (IllegalAccessException e) {
+                } catch (Exception e) {
+                    Logger.error("Error while validating token", e);
                     throw new RuntimeException(e);
                 }
                 paramField.setAccessible(false);
@@ -100,7 +101,7 @@ public abstract class AbstractHandler implements HttpHandler {
             try {
                 Object value = TypeHandler.getAdapter(field.getType()).convert(queryParams.get(fieldName));
                 field.set(this, value);
-            } catch (IllegalAccessException e) {
+            } catch (Exception e) {
                 Logger.error("Failed to set field value via reflection: {}", e.getMessage());
                 exchange.sendResponseHeaders(ResponseCode.INTERNAL_SERVER_ERROR.getCode(), -1);
                 return;
@@ -119,7 +120,7 @@ public abstract class AbstractHandler implements HttpHandler {
             try {
                 Object value = TypeHandler.getAdapter(field.getType()).convert(queryParams.get(fieldName));
                 field.set(this, value);
-            } catch (IllegalAccessException e) {
+            } catch (Exception e) {
                 Logger.error("Failed to set field value via reflection: {}", e.getMessage());
                 exchange.sendResponseHeaders(ResponseCode.INTERNAL_SERVER_ERROR.getCode(), -1);
                 return;

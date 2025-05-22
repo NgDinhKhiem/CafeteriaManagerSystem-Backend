@@ -13,6 +13,8 @@ public final class TypeHandler {
     static {
         adapters.put(String.class, String::valueOf);
         adapters.put(Integer.class, Integer::valueOf);
+        adapters.put(Long.class, Long::valueOf);
+        adapters.put(Float.class, Double::valueOf);
         adapters.put(int.class, Integer::valueOf);
         adapters.put(Double.class, Double::valueOf);
         adapters.put(double.class, Double::valueOf);
