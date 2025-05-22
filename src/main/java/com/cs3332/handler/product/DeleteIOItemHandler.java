@@ -21,7 +21,10 @@ public class DeleteIOItemHandler extends AbstractHandler {
 
     @Override
     protected ServerResponse resolve() {
-        if (!dataManager.getRole(token).contains(Role.ADMIN) && !dataManager.getRole(token).contains(Role.MANAGER)) {
+        if (!dataManager.getRole(token).contains(Role.ADMIN)
+                && !dataManager.getRole(token).contains(Role.MANAGER)
+                && !dataManager.getRole(token).contains(Role.STORAGE_MANAGER)
+        ) {
             return new ServerResponse(ResponseCode.UNAUTHORIZED, new ErrorResponse("You do not have permission to issue this action!"));
         }
         if (entryID == null) {

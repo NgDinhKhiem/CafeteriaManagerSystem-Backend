@@ -25,7 +25,11 @@ public class ExportItemHandler extends AbstractBodyHandler<IEItemPayload> {
 
     @Override
     protected ServerResponse resolve() {
-        if (!dataManager.getRole(token).contains(Role.ADMIN) && !dataManager.getRole(token).contains(Role.MANAGER)) {
+        if (!dataManager.getRole(token).contains(Role.ADMIN)
+                && !dataManager.getRole(token).contains(Role.MANAGER)
+                && !dataManager.getRole(token).contains(Role.STORAGE_MANAGER)
+                && !dataManager.getRole(token).contains(Role.BARTENDER)
+        ) {
             return new ServerResponse(ResponseCode.UNAUTHORIZED, new ErrorResponse("You do not have permission to issue this action!"));
         }
         if (payload.getItemStackID() == null) {
