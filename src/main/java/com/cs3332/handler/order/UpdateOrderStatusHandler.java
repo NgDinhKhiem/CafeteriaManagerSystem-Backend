@@ -10,6 +10,7 @@ import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.response.object.TextResponse;
 import com.cs3332.core.utils.Logger;
 import com.cs3332.core.utils.Response;
+import com.cs3332.core.utils.Utils;
 import com.cs3332.data.object.order.Order;
 import com.cs3332.data.object.order.OrderItem;
 import com.cs3332.data.object.order.OrderStatus;
@@ -108,67 +109,25 @@ public class UpdateOrderStatusHandler extends AbstractBodyHandler<UpdateOrderSta
                     itemStackId, 
                     requiredIngredients.getOrDefault(itemStackId, 0f) + requiredQuantity
                 );
-            }
-        }
-        
-        // Now, deduct ingredients from inventory (FIFO - oldest first)
-        for (Map.Entry<UUID, Float> entry : requiredIngredients.entrySet()) {
-            UUID itemStackId = entry.getKey();
-            float amountToDeduct = entry.getValue();
-            
-            // Get all items of this type, sorted by expiration date (oldest first)
-            List<Item> items = server.getDataManager().getProductionDBSource().getAllItem();
-            items.removeIf(item -> !item.getItemStackID().equals(itemStackId));
-            items.sort((a, b) -> Long.compare(a.getExpiration_date(), b.getExpiration_date()));
-            
-            // Deduct from each item until we've deducted enough
-            for (Item item : items) {
-                if (amountToDeduct <= 0) break;
-                
-                if (item.getQuantity() <= amountToDeduct) {
-                    // Use up entire item
-                    amountToDeduct -= item.getQuantity();
-                    
-                    // Remove the item (it's depleted)
-                    Response deleteResponse = server.getDataManager().getProductionDBSource().deleteIOItem(item.getEntryID());
-                    if (!deleteResponse.getState()) {
-                        return new ServerResponse(ResponseCode.INTERNAL_SERVER_ERROR, 
-                            new ErrorResponse("Failed to remove used item: " + deleteResponse.getResponse()));
-                    }
-                } else {
-                    // Create new item with reduced quantity
-                    Item updatedItem = new Item(
-                        item.getItemStackID(),
-                        item.getEntryID(),
-                        item.getImportExportDate(),
-                        item.getExpiration_date(),
-                            - amountToDeduct,
-                        item.getSupplier(),
-                            item.getReason()
-                    );
-                    
-                    // Add updated item
-                    Response importResponse = server.getDataManager().getProductionDBSource().exportItem(updatedItem);
-                    if (!importResponse.getState()) {
-                        return new ServerResponse(ResponseCode.INTERNAL_SERVER_ERROR, 
+
+                Item updatedItem = new Item(
+                        ingredient.getItemStackID(),
+                        UUID.randomUUID(),
+                        Utils.getTime(),
+                        -1,
+                        - ingredient.getQuantity(),
+                        "Bartender",
+                        "Used"
+                );
+
+                // Add updated item
+                Response importResponse = server.getDataManager().getProductionDBSource().exportItem(updatedItem);
+                if (!importResponse.getState()) {
+                    return new ServerResponse(ResponseCode.INTERNAL_SERVER_ERROR,
                             new ErrorResponse("Failed to update item: " + importResponse.getResponse()));
-                    }
-                    break;
                 }
             }
-            
-            /*if (amountToDeduct > 0) {
-                String itemName = "Unknown";
-                var itemStack = server.getDataManager().getProductionDBSource().getItemStack(itemStackId);
-                if (itemStack != null) {
-                    itemName = itemStack.getName();
-                }
-                
-                return new ServerResponse(ResponseCode.INTERNAL_SERVER_ERROR, 
-                    new ErrorResponse("Insufficient inventory for " + itemName + " when confirming order."));
-            }*/
         }
-        
         return null; // Success
     }
 } 
