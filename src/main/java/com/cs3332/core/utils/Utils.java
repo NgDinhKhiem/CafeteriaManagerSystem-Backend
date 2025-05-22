@@ -1,5 +1,8 @@
 package com.cs3332.core.utils;
 
+import java.security.CryptoPrimitive;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Date;
 import java.util.UUID;
@@ -58,6 +61,31 @@ public final class Utils {
                 "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
 
         return email.matches(emailRegex);
+    }
+
+    public static String hash(String value){
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hashBytes = digest.digest(value.getBytes());
+            StringBuilder hexString = new StringBuilder();
+
+            for (byte b : hashBytes) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+
+            return hexString.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            Logger.error("SHA-256 algorithm not found!");
+            throw new RuntimeException("SHA-256 algorithm not found!", e);
+        }
+    }
+
+    public static boolean isValidUsername(String username) {
+        // Only allows letters, digits, and underscores
+        return username != null && username.matches("^[a-zA-Z0-9_]+$");
     }
 
     public static long getTime() {

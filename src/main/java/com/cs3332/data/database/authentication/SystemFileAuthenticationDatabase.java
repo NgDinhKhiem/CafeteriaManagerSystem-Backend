@@ -17,13 +17,13 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class SystemFileAuthenticationBase implements AuthenticationSource {
+public class SystemFileAuthenticationDatabase implements AuthenticationSource {
     private transient final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private final Map<String, UserAuthInformation> authInformationHolder = new ConcurrentHashMap<>();
     private final Map<String, UserInformation> userInformationHolder = new ConcurrentHashMap<>();
     private transient final File file = new File(Paths.get("").toAbsolutePath()+File.separator+"data.json");
 
-    public SystemFileAuthenticationBase(){
+    public SystemFileAuthenticationDatabase(){
     }
 
     @Override
@@ -48,7 +48,7 @@ public class SystemFileAuthenticationBase implements AuthenticationSource {
         try {
             StringBuilder stringBuilder = new StringBuilder();
             Files.readAllLines(file.toPath(), StandardCharsets.UTF_8).forEach(stringBuilder::append);
-            SystemFileAuthenticationBase loaded = gson.fromJson(stringBuilder.toString(), SystemFileAuthenticationBase.class);
+            SystemFileAuthenticationDatabase loaded = gson.fromJson(stringBuilder.toString(), SystemFileAuthenticationDatabase.class);
             if(loaded==null)
                 return;
             this.authInformationHolder.putAll(loaded.authInformationHolder);

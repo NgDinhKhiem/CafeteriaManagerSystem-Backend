@@ -4,6 +4,7 @@ import com.cs3332.Server;
 import com.cs3332.core.object.*;
 import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.response.object.auth.UserInformationResponse;
+import com.cs3332.core.utils.Utils;
 import com.cs3332.data.object.auth.UserInformation;
 import com.cs3332.handler.constructor.AbstractHandler;
 
@@ -20,6 +21,10 @@ public class UserInformationHandler extends AbstractHandler {
         if (username == null || username.isEmpty()) {
             return new ServerResponse(ResponseCode.BAD_REQUEST, new ErrorResponse("Username is required."));
         }
+
+        if(!Utils.isValidUsername(username))
+            return new ServerResponse(ResponseCode.BAD_REQUEST, new ErrorResponse("Username is invalid!"));
+
         if(
                 dataManager.getRole(token).contains(Role.ADMIN)&&
                 !dataManager.getRole(token).contains(Role.MANAGER)&&

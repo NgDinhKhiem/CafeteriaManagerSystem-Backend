@@ -5,7 +5,8 @@ import com.cs3332.core.object.Role;
 import com.cs3332.core.utils.Utils;
 import com.cs3332.data.constructor.AuthenticationSource;
 import com.cs3332.data.constructor.ProductionDBSource;
-import com.cs3332.data.database.authentication.SystemFileAuthenticationBase;
+import com.cs3332.data.database.authentication.SupabaseAuthenticationDatabase;
+import com.cs3332.data.database.authentication.SystemFileAuthenticationDatabase;
 import com.cs3332.data.database.product.SystemFileProductionDB;
 import com.cs3332.data.object.auth.UserInformation;
 import lombok.Getter;
@@ -26,7 +27,8 @@ public class DataManager{
     private final ProductionDBSource productionDBSource;
     public DataManager(Server server){
         this.server = server;
-        authenticationSource = new SystemFileAuthenticationBase();
+        authenticationSource = new SystemFileAuthenticationDatabase();
+//        authenticationSource = new SupabaseAuthenticationDatabase();
         productionDBSource = new SystemFileProductionDB();
     }
 

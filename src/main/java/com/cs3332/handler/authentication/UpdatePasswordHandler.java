@@ -9,6 +9,7 @@ import com.cs3332.core.payload.object.auth.UpdatePasswordPayload;
 import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.response.object.TextResponse;
 import com.cs3332.core.utils.Response;
+import com.cs3332.core.utils.Utils;
 import com.cs3332.handler.constructor.AbstractBodyHandler;
 
 public class UpdatePasswordHandler extends AbstractBodyHandler<UpdatePasswordPayload> {
@@ -26,6 +27,9 @@ public class UpdatePasswordHandler extends AbstractBodyHandler<UpdatePasswordPay
         if (payload.getUsername() == null || payload.getUsername().isEmpty()) {
             return new ServerResponse(ResponseCode.BAD_REQUEST, new ErrorResponse("Username is required."));
         }
+        if(!Utils.isValidUsername(payload.getUsername())) {
+            return new ServerResponse(ResponseCode.BAD_REQUEST, new ErrorResponse("Username is invalid!"));
+        }
         if (payload.getPassword() == null || payload.getPassword().length() < 8) {
             return new ServerResponse(ResponseCode.BAD_REQUEST, new ErrorResponse("Password must be at least 8 characters long."));
         }
@@ -35,7 +39,7 @@ public class UpdatePasswordHandler extends AbstractBodyHandler<UpdatePasswordPay
         }
 
         Response response = server.getDataManager().getAuthenticationSource().updateUserPassword(
-                payload.getUsername(), payload.getOld_password(), payload.getPassword());
+                payload.getUsername(), Utils.hash(payload.getOld_password()), Utils.hash(payload.getPassword()));
 
         if(response.getState()){
             return new ServerResponse(ResponseCode.OK, new TextResponse("success"));

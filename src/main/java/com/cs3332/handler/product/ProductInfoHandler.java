@@ -21,7 +21,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ProductInfoHandler extends AbstractBodyHandler<ProductInfoPayload> {
-    private String token;
     public ProductInfoHandler(Server server) {
         super(server, RequestMethod.POST);
     }

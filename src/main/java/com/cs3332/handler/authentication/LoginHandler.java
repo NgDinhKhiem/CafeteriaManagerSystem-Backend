@@ -7,7 +7,9 @@ import com.cs3332.core.object.ServerResponse;
 import com.cs3332.core.payload.object.auth.LoginPayload;
 import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.response.object.auth.LoginSuccessResponse;
+import com.cs3332.core.utils.Logger;
 import com.cs3332.core.utils.Response;
+import com.cs3332.core.utils.Utils;
 import com.cs3332.data.object.auth.UserInformation;
 import com.cs3332.handler.constructor.AbstractBodyHandler;
 
@@ -21,12 +23,15 @@ public class LoginHandler extends AbstractBodyHandler<LoginPayload> {
         if (payload.getUsername() == null || payload.getUsername().isEmpty()) {
             return new ServerResponse(ResponseCode.BAD_REQUEST, new ErrorResponse("Username is required."));
         }
+        if(!Utils.isValidUsername(payload.getUsername()))
+            return new ServerResponse(ResponseCode.BAD_REQUEST, new ErrorResponse("Username is invalid!"));
+
         if (payload.getPassword() == null || payload.getPassword().length() < 8) {
             return new ServerResponse(ResponseCode.BAD_REQUEST, new ErrorResponse("Password must be at least 8 characters long."));
         }
 
         Response response = server.getDataManager().getAuthenticationSource().verifyUser(
-                payload.getUsername(), payload.getPassword());
+                payload.getUsername(), Utils.hash(payload.getPassword()));
 
         if(response.getState()){
             UserInformation information = server.getDataManager().getAuthenticationSource().getUserInformation(payload.getUsername());
