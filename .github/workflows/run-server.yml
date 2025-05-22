@@ -33,17 +33,17 @@ jobs:
       - name: Wait for server to start
         run: sleep 2
 
-      - name: Install and configure ngrok
-        run: |
-          # curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
-          # echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
-          # sudo apt update && sudo apt install ngrok -y
+      # - name: Install and configure ngrok
+      #   run: |
+      #     # curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
+      #     # echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
+      #     # sudo apt update && sudo apt install ngrok -y
 
-          # ngrok config add-authtoken "$NGROK_AUTHTOKEN"
-          nohup ngrok http --domain="$NGROK_DOMAIN" 8080 > ngrok.log 2>&1 &
+      #     # ngrok config add-authtoken "$NGROK_AUTHTOKEN"
+      #     nohup ngrok http --domain="$NGROK_DOMAIN" 8080 > ngrok.log 2>&1 &
 
-      - name: Wait for ngrok tunnel
-        run: sleep 10
+      # - name: Wait for ngrok tunnel
+      #   run: sleep 10
 
       - name: POST /test through ngrok public URL
         run: |
