@@ -22,8 +22,8 @@ jobs:
         working-directory: ./app
         run: |
           curl -L -o CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar https://github.com/NgDinhKhiem/CafeteriaManagerSystem-Backend/releases/download/v1.0.0/CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar
-          curl -L -o data.json https://github.com/NgDinhKhiem/CafeteriaManagerSystem-Backend/releases/download/v1.0.0/data.json
-          curl -L -o production-data.json https://github.com/NgDinhKhiem/CafeteriaManagerSystem-Backend/releases/download/v1.0.0/production-data.json
+          curl -L -o data.json https://github.com/NgDinhKhiem/CafeteriaManagerSystem-Backend/releases/download/Data/data.json
+          curl -L -o production-data.json https://github.com/NgDinhKhiem/CafeteriaManagerSystem-Backend/releases/download/Data/production-data.json
 
       - name: Start Backend JAR
         working-directory: ./app
