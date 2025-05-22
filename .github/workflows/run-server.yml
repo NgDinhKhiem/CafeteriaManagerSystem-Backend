@@ -1,19 +1,63 @@
-name: Run CafeteriaManagerSystem Backend
+name: Run CafeteriaManagerSystem Backend with Ngrok
 
 on:
-  workflow_dispatch:  # Manual trigger from GitHub UI
+  workflow_dispatch:  # Manual trigger
+  release:
+    types: [published]  # Auto-run on release
 
 jobs:
   run-backend:
     runs-on: ubuntu-latest
+    env:
+      NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
+      NGROK_DOMAIN: ${{ secrets.NGROK_DOMAIN }}  # e.g., myserver.ngrok.dev
 
     steps:
-      - name: Download CafeteriaManagerSystem JAR
-        run: |
-          echo "Downloading CafeteriaManagerSystem-Backend..."
-          curl -L -o app.jar https://github.com/NgDinhKhiem/CafeteriaManagerSystem-Backend/releases/download/v1.0.0/CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar
+      - name: Create working directory
+        run: mkdir -p app
 
-      - name: Run the Backend JAR
+      - name: Download JAR and JSON files
+        working-directory: ./app
         run: |
-          echo "Starting application..."
-          java -Xmx512M -Xms256M -jar app.jar
+          curl -L -o CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar https://github.com/NgDinhKhiem/CafeteriaManagerSystem-Backend/releases/download/v1.0.0/CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar
+          curl -L -o data.json https://github.com/NgDinhKhiem/CafeteriaManagerSystem-Backend/releases/download/v1.0.0/data.json
+          curl -L -o production-data.json https://github.com/NgDinhKhiem/CafeteriaManagerSystem-Backend/releases/download/v1.0.0/production-data.json
+
+      - name: Start Backend JAR
+        working-directory: ./app
+        run: |
+          nohup java -Xmx512M -Xms256M -jar CafeteriaManagerSystem-Backend-1.0-SNAPSHOT.jar > backend.log 2>&1 &
+
+      - name: Wait for server to start
+        run: sleep 15
+
+      - name: Install and configure ngrok
+        run: |
+          curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
+          echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
+          sudo apt update && sudo apt install ngrok -y
+
+          echo "Configuring ngrok..."
+          ngrok config add-authtoken "$NGROK_AUTHTOKEN"
+
+          echo "Starting ngrok tunnel..."
+          nohup ngrok http --domain="$NGROK_DOMAIN" 8080 > ngrok.log 2>&1 &
+
+      - name: Wait for ngrok tunnel
+        run: sleep 10
+
+      - name: POST /test through ngrok public URL
+        run: |
+          echo "Sending POST request to ngrok tunnel at https://${NGROK_DOMAIN}/test"
+          RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -X POST https://${NGROK_DOMAIN}/test \
+            -H "Content-Type: application/json" \
+            -d '{"fileText":"your text"}')
+
+          echo "Response Code: $RESPONSE"
+          echo "Response Body:"
+          cat response.txt
+
+          if [ "$RESPONSE" -ne 200 ]; then
+            echo "POST request failed with status $RESPONSE"
+            exit 1
+          fi
