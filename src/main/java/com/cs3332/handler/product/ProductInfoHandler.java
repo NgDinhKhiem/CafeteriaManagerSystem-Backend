@@ -13,6 +13,7 @@ import com.cs3332.data.object.storage.Item;
 import com.cs3332.data.object.storage.ItemStack;
 import com.cs3332.data.object.storage.Product;
 import com.cs3332.handler.constructor.AbstractBodyHandler;
+import com.cs3332.handler.constructor.AbstractHandler;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,17 +21,18 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class ProductInfoHandler extends AbstractBodyHandler<ProductInfoPayload> {
+public class ProductInfoHandler extends AbstractHandler {
+    private UUID productID;
     public ProductInfoHandler(Server server) {
-        super(server, RequestMethod.POST);
+        super(server, RequestMethod.GET);
     }
 
     @Override
     protected ServerResponse resolve() {
-        if (payload.getProductID() == null) {
+        if (productID == null) {
             return new ServerResponse(ResponseCode.BAD_REQUEST, new ErrorResponse("Product ID is required."));
         }
-        Product product = server.getDataManager().getProductionDBSource().getProduct(payload.getProductID());
+        Product product = server.getDataManager().getProductionDBSource().getProduct(productID);
         if (product != null) {
             List<IngredientResponse> ingredientResponses = product.getRecipe().stream()
                     .map(ing -> {
