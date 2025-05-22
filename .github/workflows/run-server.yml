@@ -8,9 +8,11 @@ on:
 jobs:
   run-backend:
     runs-on: ubuntu-latest
+    timeout-minutes: 125  # Safety margin over 120 mins
+
     env:
       NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
-      NGROK_DOMAIN: ${{ secrets.NGROK_DOMAIN }}  # e.g., myserver.ngrok.dev
+      NGROK_DOMAIN: ${{ secrets.NGROK_DOMAIN }}
 
     steps:
       - name: Create working directory
@@ -37,10 +39,7 @@ jobs:
           echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
           sudo apt update && sudo apt install ngrok -y
 
-          echo "Configuring ngrok..."
           ngrok config add-authtoken "$NGROK_AUTHTOKEN"
-
-          echo "Starting ngrok tunnel..."
           nohup ngrok http --domain="$NGROK_DOMAIN" 8080 > ngrok.log 2>&1 &
 
       - name: Wait for ngrok tunnel
@@ -48,7 +47,7 @@ jobs:
 
       - name: POST /test through ngrok public URL
         run: |
-          echo "Sending POST request to ngrok tunnel at https://${NGROK_DOMAIN}/test"
+          echo "Sending POST request to https://${NGROK_DOMAIN}/test"
           RESPONSE=$(curl -s -o response.txt -w "%{http_code}" -X POST https://${NGROK_DOMAIN}/test \
             -H "Content-Type: application/json" \
             -d '{"fileText":"your text"}')
@@ -61,3 +60,17 @@ jobs:
             echo "POST request failed with status $RESPONSE"
             exit 1
           fi
+
+      - name: Keep the server running for 2 hours
+        run: |
+          echo "Server and ngrok tunnel running at https://${NGROK_DOMAIN}"
+          echo "Keeping alive for 2 hours..."
+          sleep 7200
+
+      - name: View backend logs (on completion or failure)
+        if: always()
+        run: |
+          echo "=== Backend Logs ==="
+          cat app/backend.log || echo "No backend log found"
+          echo "=== Ngrok Logs ==="
+          cat ngrok.log || echo "No ngrok log found"
