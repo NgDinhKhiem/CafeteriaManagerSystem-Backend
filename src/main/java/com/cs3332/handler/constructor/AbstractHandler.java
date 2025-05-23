@@ -118,6 +118,7 @@ public abstract class AbstractHandler implements HttpHandler {
 
             field.setAccessible(true);
             try {
+                field.set(this, null);
                 Object value = TypeHandler.getAdapter(field.getType()).convert(queryParams.get(fieldName));
                 field.set(this, value);
             } catch (Exception e) {

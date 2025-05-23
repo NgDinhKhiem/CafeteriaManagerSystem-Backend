@@ -223,7 +223,7 @@ public class SystemFileProductionDB implements ProductionDBSource {
             or.removeIf(s-> s.getOrderTimestamp()<from);
         if(to!=null)
             or.removeIf(s-> s.getOrderTimestamp()>to);
-        return new ArrayList<>(orders.values()).stream().map(this::updateOrder).toList();
+        return or.stream().map(this::updateOrder).toList();
     }
 
     Order updateOrder(Order order) {
