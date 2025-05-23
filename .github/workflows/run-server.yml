@@ -8,7 +8,7 @@ on:
 jobs:
   run-backend:
     runs-on: self-hosted
-    timeout-minutes: 50000  # Safety margin over 120 mins
+    timeout-minutes: 86400  # Safety margin over 120 mins
 
     env:
       NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
@@ -61,7 +61,7 @@ jobs:
       #       exit 1
       #     fi
 
-      - name: Stream backend logs live for 2 hours (50000 seconds)
+      - name: Stream backend logs live for 24 hours (86400 seconds)
         run: |
-          echo "Streaming backend logs live for 2 hours. Press Ctrl+C to stop."
-          timeout 50000 tail -f app/backend.log || true
+          echo "Streaming backend logs live for 24 hours. Press Ctrl+C to stop."
+          timeout 86400 tail -f app/backend.log || true
