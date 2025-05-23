@@ -3,14 +3,12 @@ package com.cs3332.handler.order;
 import com.cs3332.Server;
 import com.cs3332.core.object.RequestMethod;
 import com.cs3332.core.object.ResponseCode;
-import com.cs3332.core.object.Role;
 import com.cs3332.core.object.ServerResponse;
 import com.cs3332.core.payload.object.order.CreateOrderPayload;
 import com.cs3332.core.payload.object.order.OrderItemPayload;
 import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.response.object.order.OrderResponse;
 import com.cs3332.core.utils.Utils;
-import com.cs3332.data.object.auth.UserInformation;
 import com.cs3332.data.object.order.Order;
 import com.cs3332.data.object.order.OrderItem;
 import com.cs3332.data.object.order.OrderStatus;
@@ -59,7 +57,12 @@ public class CreateOrderHandler extends AbstractBodyHandler<CreateOrderPayload> 
                 );
             }
 
-            OrderItem orderItem = new OrderItem(product.getID(), itemPayload.getQuantity(), product.getPrice());
+            OrderItem orderItem = new OrderItem(
+                    product.getID(),
+                    product.getName(),
+                    product.getUnit(),
+                    itemPayload.getQuantity(),
+                    product.getPrice());
             orderItems.add(orderItem);
         }
         

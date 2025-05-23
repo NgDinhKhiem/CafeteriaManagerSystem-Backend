@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class SystemFileProductionDB implements ProductionDBSource {
     private transient final Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -208,7 +209,7 @@ public class SystemFileProductionDB implements ProductionDBSource {
 
     @Override
     public List<Order> getAllOrders() {
-        return new ArrayList<>(orders.values());
+        return orders.values().stream().map(this::updateOrder).collect(Collectors.toList());
     }
 
     @Override
@@ -222,7 +223,20 @@ public class SystemFileProductionDB implements ProductionDBSource {
             or.removeIf(s-> s.getOrderTimestamp()<from);
         if(to!=null)
             or.removeIf(s-> s.getOrderTimestamp()>to);
-        return or;
+        return or.stream().map(this::updateOrder).toList();
+    }
+
+    Order updateOrder(Order order) {
+        List<OrderItem> orderItems = order.getItems();
+        for (OrderItem orderItem : orderItems) {
+            Product product = products.get(orderItem.getProductID());
+            if(product!=null) {
+                orderItem.setProductName(product.getName());
+                orderItem.setUnit(product.getUnit());
+            }
+        }
+        order.setItems(orderItems);
+        return order;
     }
 
     @Override

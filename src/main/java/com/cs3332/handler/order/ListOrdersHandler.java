@@ -59,7 +59,6 @@ public class ListOrdersHandler extends AbstractHandler {
                 return new ServerResponse(ResponseCode.FOUND, new OrderListResponse(List.of()));
             }
 
-
             List<OrderResponse> orderResponses = orders.stream()
                     .map(OrderResponse::new)
                     .collect(Collectors.toList());
