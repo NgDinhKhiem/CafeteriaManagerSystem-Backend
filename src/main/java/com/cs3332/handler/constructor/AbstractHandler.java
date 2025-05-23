@@ -113,12 +113,13 @@ public abstract class AbstractHandler implements HttpHandler {
         for (Field field : optionalParamFields) {
             try {
                 String fieldName = field.getName();
-                if (!queryParams.containsKey(fieldName)) {
-                    continue;
-                }
 
                 field.setAccessible(true);
                 field.set(this, null);
+
+                if (!queryParams.containsKey(fieldName)) {
+                    continue;
+                }
 
                 Object value = TypeHandler.getAdapter(field.getType()).convert(queryParams.get(fieldName));
                 field.set(this, value);
