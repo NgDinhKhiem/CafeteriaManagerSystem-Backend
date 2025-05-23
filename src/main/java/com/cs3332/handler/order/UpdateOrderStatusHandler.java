@@ -11,6 +11,7 @@ import com.cs3332.core.response.object.TextResponse;
 import com.cs3332.core.utils.Logger;
 import com.cs3332.core.utils.Response;
 import com.cs3332.core.utils.Utils;
+import com.cs3332.data.object.auth.UserInformation;
 import com.cs3332.data.object.order.Order;
 import com.cs3332.data.object.order.OrderItem;
 import com.cs3332.data.object.order.OrderStatus;
@@ -51,16 +52,25 @@ public class UpdateOrderStatusHandler extends AbstractBodyHandler<UpdateOrderSta
         }
 
         Order order = server.getDataManager().getProductionDBSource().getOrder(payload.getOrderID());
+
+        UserInformation userInformation = dataManager.getAccountInformation(token);
+        if(userInformation == null) {
+            return new ServerResponse(ResponseCode.UNAUTHORIZED,
+                    new ErrorResponse("You do not have permission to update order status."));
+        }
+
         if (order == null) {
             return new ServerResponse(ResponseCode.NOT_FOUND, new ErrorResponse("Order not found."));
         }
 
         // Check if we're transitioning to CONFIRMED status
         boolean isConfirming = payload.getNewStatus() == OrderStatus.READY;
-
+        if(order.getStatus()==OrderStatus.PENDING_CONFIRMATION){
+            order.setUserID(userInformation.getUsername());
+        }
         // Set the new status
         order.setStatus(payload.getNewStatus());
-        
+
         // If we're confirming the order, deduct from inventory
         if (isConfirming) {
             ServerResponse deductionResponse = deductIngredientsFromInventory(order);

@@ -22,24 +22,12 @@ import com.cs3332.handler.constructor.AbstractBodyHandler;
 import java.util.*;
 
 public class CreateOrderHandler extends AbstractBodyHandler<CreateOrderPayload> {
-    private String token;
-
     public CreateOrderHandler(Server server) {
         super(server, RequestMethod.POST);
     }
 
     @Override
     protected ServerResponse resolve() {
-        UserInformation requester = dataManager.getAccountInformation(token);
-        if (requester == null) {
-            return new ServerResponse(ResponseCode.UNAUTHORIZED, new ErrorResponse("Invalid token."));
-        }
-
-        List<Role> roles = dataManager.getRole(token);
-        if (!roles.contains(Role.CASHIER) && !roles.contains(Role.BARTENDER) && !roles.contains(Role.MANAGER) && !roles.contains(Role.ADMIN)) {
-            return new ServerResponse(ResponseCode.UNAUTHORIZED, new ErrorResponse("You do not have permission to create an order."));
-        }
-
         if (payload.getItems() == null || payload.getItems().isEmpty()) {
             return new ServerResponse(ResponseCode.BAD_REQUEST, new ErrorResponse("Order must contain at least one item."));
         }
@@ -109,8 +97,8 @@ public class CreateOrderHandler extends AbstractBodyHandler<CreateOrderPayload> 
                 UUID.randomUUID(),
                 orderItems,
                 Utils.getTime(),
-                payload.isApproved()?OrderStatus.PENDING_PAYMENT:OrderStatus.PENDING_CONFIRMATION,
-                requester.getUsername(),
+                OrderStatus.PENDING_CONFIRMATION,
+                "",
                 0L,
                 0L,
                 0L,

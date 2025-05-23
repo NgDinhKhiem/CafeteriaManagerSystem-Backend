@@ -13,5 +13,4 @@ import java.util.List;
 public class CreateOrderPayload extends AbstractRequestBody {
     private List<OrderItemPayload> items;
     private String tableID;
-    private boolean approved;
 }
