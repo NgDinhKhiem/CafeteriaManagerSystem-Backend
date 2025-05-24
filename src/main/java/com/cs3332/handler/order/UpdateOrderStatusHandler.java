@@ -63,13 +63,25 @@ public class UpdateOrderStatusHandler extends AbstractBodyHandler<UpdateOrderSta
             return new ServerResponse(ResponseCode.NOT_FOUND, new ErrorResponse("Order not found."));
         }
 
+        if (this.payload.getNewStatus().getWeight()-order.getStatus().getWeight()<=1) {
+            return new ServerResponse(ResponseCode.NOT_MODIFIED, new ErrorResponse("New status weight is lower or equal than the currently."));
+        }
+
         // Check if we're transitioning to CONFIRMED status
         boolean isConfirming = payload.getNewStatus() == OrderStatus.READY;
         if(order.getStatus()==OrderStatus.PENDING_CONFIRMATION){
             order.setUserID(userInformation.getUsername());
         }
+
         // Set the new status
         order.setStatus(payload.getNewStatus());
+
+        switch (order.getStatus()){
+            case READY:
+            case PREPARING:
+                order.setPreparedBy(userInformation.getUsername());
+                break;
+        }
 
         // If we're confirming the order, deduct from inventory
         if (isConfirming) {
@@ -78,7 +90,6 @@ public class UpdateOrderStatusHandler extends AbstractBodyHandler<UpdateOrderSta
                 Logger.warn("ERROR IN DEDUCTION: " + deductionResponse.getResponse());
                 return deductionResponse;
             }
-            order.setPreparedBy(userInformation.getUsername());
         }
 
         // Update order with new status and timestamps
