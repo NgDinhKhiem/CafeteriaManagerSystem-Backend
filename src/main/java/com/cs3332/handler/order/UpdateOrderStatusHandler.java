@@ -63,7 +63,9 @@ public class UpdateOrderStatusHandler extends AbstractBodyHandler<UpdateOrderSta
             return new ServerResponse(ResponseCode.NOT_FOUND, new ErrorResponse("Order not found."));
         }
 
-        if (this.payload.getNewStatus().getWeight()-order.getStatus().getWeight()<=1) {
+        if ((this.payload.getNewStatus().getWeight()-order.getStatus().getWeight()!=0
+                &&this.payload.getNewStatus().getWeight()-order.getStatus().getWeight()!=1)
+            ||this.payload.getNewStatus().equals(order.getStatus())) {
             return new ServerResponse(ResponseCode.NOT_MODIFIED, new ErrorResponse("New status weight is lower or equal than the currently."));
         }
 
