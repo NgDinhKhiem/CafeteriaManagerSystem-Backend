@@ -114,7 +114,8 @@ public class CreateOrderHandler extends AbstractBodyHandler<CreateOrderPayload> 
         }
 
         OrderResponse response = new OrderResponse(
-                createdOrder
+                createdOrder,
+                server.getDataManager().getAuthenticationSource()
         );
 
         return new ServerResponse(ResponseCode.CREATED, response);

@@ -78,6 +78,7 @@ public class UpdateOrderStatusHandler extends AbstractBodyHandler<UpdateOrderSta
                 Logger.warn("ERROR IN DEDUCTION: " + deductionResponse.getResponse());
                 return deductionResponse;
             }
+            order.setPreparedBy(userInformation.getUsername());
         }
 
         // Update order with new status and timestamps
