@@ -22,7 +22,7 @@ jobs:
       - name: Download JAR file
         working-directory: ./app
         run: |
-          curl -L -o CafeteriaManagerSystem.jar https://github.com/NgDinhKhiem/CafeteriaManagerSystem-Backend/releases/download/v1.0.0/CafeteriaManagerSystem.jar
+          curl -L -o CafeteriaManagerSystem.jar https://github.com/NgDinhKhiem/CafeteriaManagerSystem-Backend/releases/download/v1.0.0/CafeteriaManagementSystem.jar
 
       - name: Start Java Backend
         working-directory: ./app
