@@ -1,0 +1,75 @@
+name: Run Both Backends with Ngrok
+
+on:
+  workflow_dispatch:  # Manual trigger
+  release:
+    types: [published]  # Auto-run on release
+
+jobs:
+  run-java-backend:
+    name: Run CafeteriaManagerSystem Java Backend
+    runs-on: self-hosted
+    timeout-minutes: 1440
+
+    env:
+      NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
+      NGROK_DOMAIN: ${{ secrets.NGROK_DOMAIN }}
+
+    steps:
+      - name: Set up app directory
+        run: mkdir -p app
+
+      - name: Download JAR file
+        working-directory: ./app
+        run: |
+          curl -L -o CafeteriaManagerSystem.jar https://github.com/NgDinhKhiem/CafeteriaManagerSystem-Backend/releases/download/v1.0.0/CafeteriaManagerSystem.jar
+
+      - name: Start Java Backend
+        working-directory: ./app
+        run: |
+          nohup java -Xmx512M -Xms256M -jar CafeteriaManagerSystem.jar > backend-java.log 2>&1 &
+
+      - name: Wait for Java server to start
+        run: sleep 5
+
+      - name: Stream Java backend logs
+        run: |
+          echo "Streaming Java backend logs..."
+          timeout 86400 tail -f app/backend-java.log | tee java-live.log
+
+  run-python-backend:
+    name: Run Cs3332 Python Backend
+    runs-on: self-hosted
+    timeout-minutes: 1440
+
+    env:
+      NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
+      NGROK_DOMAIN: ${{ secrets.NGROK_DOMAIN }}
+
+    steps:
+      - name: Clean and clone repo
+        run: |
+          rm -rf app
+          mkdir -p app
+          git clone https://github.com/Chocon2911/Cs3332.git app
+
+      - name: Install dependencies
+        working-directory: ./app
+        run: |
+          if [ -f requirements.txt ]; then
+            python3 -m pip install --upgrade pip
+            python3 -m pip install -r requirements.txt
+          fi
+
+      - name: Start Python Backend
+        working-directory: ./app
+        run: |
+          nohup python3 Main.py > backend-python.log 2>&1 &
+
+      - name: Wait for Python server to start
+        run: sleep 5
+
+      - name: Stream Python backend logs
+        run: |
+          echo "Streaming Python backend logs..."
+          timeout 86400 tail -f app/backend-python.log | tee python-live.log
