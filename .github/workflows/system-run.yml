@@ -1,4 +1,4 @@
-name: Run Both Backends with Ngrok
+name: Run Both Backends and Frontends Services
 
 on:
   workflow_dispatch:  # Manual trigger
