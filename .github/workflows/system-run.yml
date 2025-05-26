@@ -12,6 +12,10 @@ jobs:
     timeout-minutes: 1440
 
     env:
+      AUTH_DATABASE: SUPABASE
+      PRODUCT_DATABASE: SUPABASE
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
       NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
       NGROK_DOMAIN: ${{ secrets.NGROK_DOMAIN }}
 
@@ -24,6 +28,15 @@ jobs:
         run: |
           curl -L -o CafeteriaManagerSystem.jar https://github.com/NgDinhKhiem/CafeteriaManagerSystem-Backend/releases/download/v1.0.0/CafeteriaManagementSystem.jar
 
+      - name: Create .env file
+        working-directory: ./app
+        run: |
+          [ -f .env ] && rm .env
+          echo "AUTH_DATABASE=${AUTH_DATABASE}" >> .env
+          echo "PRODUCT_DATABASE=${PRODUCT_DATABASE}" >> .env
+          echo "SUPABASE_URL=${SUPABASE_URL}" >> .env
+          echo "SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}" >> .env
+      
       - name: Start Java Backend
         working-directory: ./app
         run: |
