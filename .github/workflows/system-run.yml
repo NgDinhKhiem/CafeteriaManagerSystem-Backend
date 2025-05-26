@@ -36,6 +36,16 @@ jobs:
           echo "PRODUCT_DATABASE=${PRODUCT_DATABASE}" >> .env
           echo "SUPABASE_URL=${SUPABASE_URL}" >> .env
           echo "SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}" >> .env
+          echo ".env file created:"
+          cat .env
+
+      - name: Confirm .env exists before starting
+        working-directory: ./app
+        run: |
+          if [ ! -f .env ]; then
+            echo "ERROR: .env not found"
+            exit 1
+          fi
       
       - name: Start Java Backend
         working-directory: ./app
