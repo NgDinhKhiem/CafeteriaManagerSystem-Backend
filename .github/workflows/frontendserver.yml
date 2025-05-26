@@ -1,0 +1,44 @@
+name: FRONTEND-SERVER
+
+on:
+  workflow_dispatch:  # Manual trigger
+  release:
+    types: [published]  # Auto-run on release
+
+jobs:
+  run-python-backend:
+    name: Run Cs3332 Python Backend
+    runs-on: self-hosted
+    timeout-minutes: 1440
+
+    env:
+      NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
+      NGROK_DOMAIN: ${{ secrets.NGROK_DOMAIN }}
+
+    steps:
+      - name: Clean and clone repo
+        run: |
+          rm -rf app
+          mkdir -p app
+          git clone https://github.com/Chocon2911/Cs3332.git app
+
+      - name: Install dependencies
+        working-directory: ./app
+        run: |
+          if [ -f requirements.txt ]; then
+            python3 -m pip install --upgrade pip
+            python3 -m pip install -r requirements.txt
+          fi
+
+      - name: Start Python Backend
+        working-directory: ./app
+        run: |
+          nohup python3 Main.py > backend-python.log 2>&1 &
+
+      - name: Wait for Python server to start
+        run: sleep 5
+
+      - name: Stream Python backend logs
+        run: |
+          echo "Streaming Python backend logs..."
+          timeout 86400 tail -f app/backend-python.log | tee python-live.log
