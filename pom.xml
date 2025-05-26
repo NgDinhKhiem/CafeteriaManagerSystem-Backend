@@ -82,6 +82,7 @@
                   <mainClass>com.cs3332.Server</mainClass>
                 </transformer>
               </transformers>
+              <outputFile>${project.basedir}/target/CafeteriaManagementSystem.jar</outputFile>
             </configuration>
           </execution>
         </executions>

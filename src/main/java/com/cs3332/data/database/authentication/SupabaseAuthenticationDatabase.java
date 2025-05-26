@@ -19,7 +19,7 @@ import java.util.Properties;
 
 public class SupabaseAuthenticationDatabase implements AuthenticationSource {
     public final SupabaseClient supabaseClient;
-    private transient final File configFile = new File(Paths.get("").toAbsolutePath()+File.separator+".env");
+    private static final File configFile = new File(Paths.get("").toAbsolutePath()+File.separator+".env");
     private static final String AUTH_DATABASE = "user_auth_information";
     private static final String USER_INFO_DATABASE = "user_information";
 
