@@ -7,6 +7,8 @@ import com.cs3332.data.database.lib.supabase.JSONBuilder;
 import com.cs3332.data.database.lib.supabase.SupabaseClient;
 import com.cs3332.data.object.auth.UserAuthInformation;
 import com.cs3332.data.object.auth.UserInformation;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONObject;
 
@@ -22,14 +24,15 @@ public class SupabaseAuthenticationDatabase implements AuthenticationSource {
     private static final File configFile = new File(Paths.get("").toAbsolutePath()+File.separator+".env");
     private static final String AUTH_DATABASE = "user_auth_information";
     private static final String USER_INFO_DATABASE = "user_information";
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public SupabaseAuthenticationDatabase(){
         if(!configFile.exists())
             throw new RuntimeException("ERROR IN SETUP DATABASE");
         Properties env = getProperties();
 
-        String URL = env.getProperty("NEXT_PUBLIC_SUPABASE_URL");
-        String KEY = env.getProperty("NEXT_PUBLIC_SUPABASE_ANON_KEY");
+        String URL = env.getProperty("SUPABASE_URL");
+        String KEY = env.getProperty("SUPABASE_ANON_KEY");
 
         if (URL == null || KEY == null) {
             throw new RuntimeException("Supabase URL or Key not found in .env file");
@@ -67,22 +70,35 @@ public class SupabaseAuthenticationDatabase implements AuthenticationSource {
 
     @Override
     public UserInformation getUserInformation(String username) {
-        return null;
+        JSONObject rs = supabaseClient.from(USER_INFO_DATABASE)
+                .eq("username", username)
+                .select("info")
+                .single()
+                .exec();
+        return gson.fromJson((((JSONObject)rs.get("data")).get("info")).toString(),UserInformation.class);
     }
 
     @Override
     public Response verifyUser(String username, String password) {
-        JSONObject rs = supabaseClient.from(AUTH_DATABASE).select("username, password")
+        JSONObject rs = supabaseClient.from(AUTH_DATABASE).select("username")
                 .eq("username", username)
-                .eq("password", password)
                 .exec();
-        Logger.debug(rs.toJSONString());
+        if(rs.toJSONString().contains("[]"))
+            return new Response("Not found!");
         return new Response();
     }
 
     @Override
     public Response updateUserInformation(String username, UserInformation userInformation) {
-        return null;
+        JSONObject rs = supabaseClient.from(USER_INFO_DATABASE).upsert(
+                new JSONBuilder()
+                        .pl("username",username)
+                        .pl("info", gson.toJson(userInformation))
+                        .build()).exec();
+        if(rs.get("error")!=null){
+            return new  Response("Username not found!");
+        }
+        return new Response();
     }
 
     @Override
@@ -96,7 +112,11 @@ public class SupabaseAuthenticationDatabase implements AuthenticationSource {
         if(rs.get("error")!=null){
             return new Response("Already exited username");
         }
-        rs = supabaseClient.from(USER_INFO_DATABASE).upsert(JSONBuilder.toJSONObj(user)).exec();
+        rs = supabaseClient.from(USER_INFO_DATABASE).upsert(
+                new JSONBuilder()
+                        .pl("username",user.getUsername())
+                        .pl("info", gson.toJson(user))
+                .build()).exec();
         if(rs.get("error")!=null){
             Logger.error(rs.toJSONString());
             rs = supabaseClient.from(AUTH_DATABASE).select("username").eq("username", auth.getUsername()).delete().exec();
@@ -110,12 +130,34 @@ public class SupabaseAuthenticationDatabase implements AuthenticationSource {
 
     @Override
     public Response deleteUser(String username) {
-        return null;
+        JSONObject rs = supabaseClient.from(AUTH_DATABASE).eq("username", username).delete().exec();
+        if(rs.get("error")!=null){
+            return new Response("Invalid username");
+        }
+        rs = supabaseClient.from(USER_INFO_DATABASE).eq("username", username).delete().exec();
+        if(rs.get("error")!=null){
+            return new Response("Invalid username");
+        }
+        return new Response();
     }
 
     @Override
     public Response updateUserPassword(String username, String oldPassword, String newPassword) {
-        return null;
+        JSONObject rs = supabaseClient.from(AUTH_DATABASE)
+                .eq("username", username)
+                .eq("password", oldPassword)
+                .exec();
+        if(rs.toJSONString().contains("[]"))
+            return new Response("Not found!");
+        rs = supabaseClient.from(AUTH_DATABASE).upsert(
+                new JSONBuilder()
+                        .pl("username",username)
+                        .pl("password", newPassword)
+                        .build()).exec();
+        if(rs.get("error")!=null){
+            return new Response("Error");
+        }
+        return new Response();
     }
 
     @Override

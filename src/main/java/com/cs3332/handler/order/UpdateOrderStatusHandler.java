@@ -63,10 +63,16 @@ public class UpdateOrderStatusHandler extends AbstractBodyHandler<UpdateOrderSta
             return new ServerResponse(ResponseCode.NOT_FOUND, new ErrorResponse("Order not found."));
         }
 
+        if(this.payload.getNewStatus()==OrderStatus.PAID&&order.getStatus()==OrderStatus.PREPARING){
+            if(!order.getPreparedBy().equals(userInformation.getUsername())){
+                return new ServerResponse(ResponseCode.UNAUTHORIZED, new ErrorResponse("Not allowed"));
+            }
+        }
+
         if ((this.payload.getNewStatus().getWeight()-order.getStatus().getWeight()!=0
                 &&this.payload.getNewStatus().getWeight()-order.getStatus().getWeight()!=1)
             ||this.payload.getNewStatus().equals(order.getStatus())) {
-            return new ServerResponse(ResponseCode.NOT_MODIFIED, new ErrorResponse("New status weight is lower or equal than the currently."));
+            return new ServerResponse(ResponseCode.NOT_MODIFIED, new ErrorResponse("New status weight is invalid!"));
         }
 
         // Check if we're transitioning to CONFIRMED status

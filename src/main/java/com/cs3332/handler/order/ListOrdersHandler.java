@@ -60,7 +60,7 @@ public class ListOrdersHandler extends AbstractHandler {
             }
 
             List<OrderResponse> orderResponses = orders.stream()
-                    .map(e->new OrderResponse(e, server.getDataManager().getAuthenticationSource()))
+                    .map(OrderResponse::new)
                     .collect(Collectors.toList());
 
             return new ServerResponse(ResponseCode.FOUND, new OrderListResponse(orderResponses));

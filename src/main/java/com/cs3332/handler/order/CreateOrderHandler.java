@@ -8,6 +8,7 @@ import com.cs3332.core.payload.object.order.CreateOrderPayload;
 import com.cs3332.core.payload.object.order.OrderItemPayload;
 import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.response.object.order.OrderResponse;
+import com.cs3332.core.utils.Logger;
 import com.cs3332.core.utils.Utils;
 import com.cs3332.data.object.order.Order;
 import com.cs3332.data.object.order.OrderItem;
@@ -16,6 +17,7 @@ import com.cs3332.data.object.storage.Ingredient;
 import com.cs3332.data.object.storage.Item;
 import com.cs3332.data.object.storage.Product;
 import com.cs3332.handler.constructor.AbstractBodyHandler;
+import lombok.extern.java.Log;
 
 import java.util.*;
 
@@ -34,13 +36,13 @@ public class CreateOrderHandler extends AbstractBodyHandler<CreateOrderPayload> 
         
         // Check ingredient availability for all products in the order
         Map<UUID, Float> requiredIngredients = new HashMap<>();
-        
         for (OrderItemPayload itemPayload : payload.getItems()) {
             if (itemPayload.getProductID() == null || itemPayload.getQuantity() <= 0) {
                 return new ServerResponse(ResponseCode.BAD_REQUEST, new ErrorResponse("Invalid item details: Product ID is null or quantity is not positive."));
             }
-            
+
             Product product = server.getDataManager().getProductionDBSource().getProduct(itemPayload.getProductID());
+
             if (product == null) {
                 return new ServerResponse(ResponseCode.NOT_FOUND, new ErrorResponse("Product not found: " + itemPayload.getProductID()));
             }
@@ -65,7 +67,7 @@ public class CreateOrderHandler extends AbstractBodyHandler<CreateOrderPayload> 
                     product.getPrice());
             orderItems.add(orderItem);
         }
-        
+
         // Verify we have enough of each ingredient in inventory
         for (Map.Entry<UUID, Float> entry : requiredIngredients.entrySet()) {
             UUID itemStackId = entry.getKey();
@@ -78,7 +80,6 @@ public class CreateOrderHandler extends AbstractBodyHandler<CreateOrderPayload> 
                     availableAmount += item.getQuantity();
                 }
             }
-            
             if (availableAmount < requiredAmount) {
                 // Get the item stack name for a better error message
                 String itemName = "Unknown";
@@ -114,8 +115,7 @@ public class CreateOrderHandler extends AbstractBodyHandler<CreateOrderPayload> 
         }
 
         OrderResponse response = new OrderResponse(
-                createdOrder,
-                server.getDataManager().getAuthenticationSource()
+                createdOrder
         );
 
         return new ServerResponse(ResponseCode.CREATED, response);

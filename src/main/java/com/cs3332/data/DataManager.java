@@ -2,11 +2,13 @@ package com.cs3332.data;
 
 import com.cs3332.Server;
 import com.cs3332.core.object.Role;
+import com.cs3332.core.utils.Logger;
 import com.cs3332.core.utils.Utils;
 import com.cs3332.data.constructor.AuthenticationSource;
 import com.cs3332.data.constructor.ProductionDBSource;
 import com.cs3332.data.database.authentication.SupabaseAuthenticationDatabase;
 import com.cs3332.data.database.authentication.SystemFileAuthenticationDatabase;
+import com.cs3332.data.database.product.SupabaseProductionDatabase;
 import com.cs3332.data.database.product.SystemFileProductionDB;
 import com.cs3332.data.object.auth.UserInformation;
 import lombok.Getter;
@@ -30,33 +32,37 @@ public class DataManager{
     private final ProductionDBSource productionDBSource;
     public DataManager(Server server){
         this.server = server;
+        Logger.debug("PATH: "+configFile.getPath());
+        Logger.debug("PATH: "+configFile.exists());
+        Properties env = getProperties();
+        String AUTH_DB = env.getProperty("AUTH_DATABASE");
+        String PRODUCT_DB = env.getProperty("PRODUCT_DATABASE");
+        Logger.debug(AUTH_DB+" "+ PRODUCT_DB);
+        if(AUTH_DB==null){
+            authenticationSource = new SystemFileAuthenticationDatabase();
+        }else switch (AUTH_DB){
+            case "SUPABASE":
+                authenticationSource = new SupabaseAuthenticationDatabase();
+                break;
+            case "FILE":
+            default:
+                authenticationSource = new SystemFileAuthenticationDatabase();
+                break;
+        }
 
-//        Properties env = getProperties();
-//        String AUTH_DB = env.getProperty("AUTH_DATABASE");
-//        String PRODUCT_DB = env.getProperty("PRODUCT_DATABASE");
-//
-//        if(AUTH_DB==null){
-//            authenticationSource = new SystemFileAuthenticationDatabase();
-//        }else switch (AUTH_DB){
-//            case "SUPABASE":
-//                authenticationSource = new SupabaseAuthenticationDatabase();
-//                break;
-//            case "FILE":
-//            default:
-//                authenticationSource = new SystemFileAuthenticationDatabase();
-//                break;
-//        }
-//
-//        if(PRODUCT_DB==null){
-//            productionDBSource = new SystemFileProductionDB();
-//        }else switch (PRODUCT_DB){
-//            case "FILE":
-//            default:
-//                productionDBSource = new SystemFileProductionDB();
-//                break;
-//        }
-        authenticationSource = new SystemFileAuthenticationDatabase();
-        productionDBSource = new SystemFileProductionDB();
+        if(PRODUCT_DB==null){
+            productionDBSource = new SystemFileProductionDB();
+        }else switch (PRODUCT_DB){
+            case "SUPABASE":
+                productionDBSource = new SupabaseProductionDatabase();
+                break;
+            case "FILE":
+            default:
+                productionDBSource = new SystemFileProductionDB();
+                break;
+        }
+//        authenticationSource = new SystemFileAuthenticationDatabase();
+//        productionDBSource = new SystemFileProductionDB();
     }
 
     @NotNull

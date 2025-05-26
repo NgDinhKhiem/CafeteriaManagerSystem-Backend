@@ -9,6 +9,7 @@ import com.cs3332.core.payload.object.product.CreateProductPayload;
 import com.cs3332.core.response.object.ErrorResponse;
 import com.cs3332.core.response.object.product.IngredientResponse;
 import com.cs3332.core.response.object.product.ProductResponse;
+import com.cs3332.core.utils.Logger;
 import com.cs3332.data.object.storage.Ingredient;
 import com.cs3332.data.object.storage.Item;
 import com.cs3332.data.object.storage.ItemStack;
@@ -56,6 +57,7 @@ public class CreateProductHandler extends AbstractBodyHandler<CreateProductPaylo
                 return new ServerResponse(ResponseCode.BAD_REQUEST, new ErrorResponse("ItemStack with ID " + ingredient.getItemStackID() + " does not exist."));
             }
         }
+
         Product product = new Product(
                 UUID.randomUUID(),
                 payload.getName(),

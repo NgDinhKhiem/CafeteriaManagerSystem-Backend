@@ -42,8 +42,8 @@ public class GetAllItemsHandler extends AbstractHandler {
                             i.getImportExportDate(),
                             i.getExpiration_date(),
                             i.getQuantity(),
-                            i.getSupplier(),
-                            i.getReason());
+                            i.getReason(),
+                            i.getSupplier());
                 })
                 .collect(Collectors.toList());
         if(from!=null){

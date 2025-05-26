@@ -7,16 +7,15 @@ import com.cs3332.core.object.ServerResponse;
 import com.cs3332.core.response.object.product.IngredientResponse;
 import com.cs3332.core.response.object.product.ProductListResponse;
 import com.cs3332.core.response.object.product.ProductResponse;
+import com.cs3332.core.utils.Logger;
 import com.cs3332.data.object.storage.Ingredient;
 import com.cs3332.data.object.storage.Item;
 import com.cs3332.data.object.storage.ItemStack;
 import com.cs3332.data.object.storage.Product;
 import com.cs3332.handler.constructor.AbstractHandler;
+import com.google.gson.Gson;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class GetAllProductsHandler extends AbstractHandler {
@@ -29,23 +28,29 @@ public class GetAllProductsHandler extends AbstractHandler {
         List<Product> products = server.getDataManager().getProductionDBSource().getAllProduct();
 
         // Calculate available ingredient quantities once for all products
-        Map<UUID, Float> availableIngredients = calculateAvailableIngredients();
 
-        List<ProductResponse> responses = products.stream()
-                .map(product -> new ProductResponse(
-                        product.getID(),
-                        product.getName(),
-                        product.getUnit(),
-                        product.getPrice(),
-                        product.getRecipe().stream()
-                                .map(ing -> {
-                                    ItemStack itemStack = server.getDataManager().getProductionDBSource().getItemStack(ing.getItemStackID());
-                                    return new IngredientResponse(ing.getItemStackID(), itemStack.getName(), itemStack.getUnit(), ing.getQuantity());
-                                })
-                                .collect(Collectors.toList()),
-                        calculateAvailableProductCount(product, availableIngredients)
-                ))
-                .collect(Collectors.toList());
+        Map<UUID, Float> availableIngredients = calculateAvailableIngredients();
+        List<ProductResponse> responses = new ArrayList<>();
+
+        for (Product product : products) {
+            calculateAvailableProductCount(product, availableIngredients);
+            ProductResponse rs = new ProductResponse(
+                    product.getID(),
+                    product.getName(),
+                    product.getUnit(),
+                    product.getPrice(),
+                    product.getRecipe().stream()
+                            .map(ing -> {
+                                ItemStack itemStack = server.getDataManager().getProductionDBSource().getItemStack(ing.getItemStackID());
+                                return new IngredientResponse(ing.getItemStackID(), itemStack.getName(), itemStack.getUnit(), ing.getQuantity());
+                            })
+                            .collect(Collectors.toList()),
+                    calculateAvailableProductCount(product, availableIngredients)
+            );
+
+            responses.add(rs);
+        }
+
         return new ServerResponse(ResponseCode.FOUND, new ProductListResponse(responses));
     }
     
@@ -53,7 +58,7 @@ public class GetAllProductsHandler extends AbstractHandler {
      * Calculates all available ingredients in the inventory
      * @return Map of itemStackId to available quantity
      */
-    private Map<UUID, Float> calculateAvailableIngredients() {
+    private synchronized Map<UUID, Float>  calculateAvailableIngredients() {
         Map<UUID, Float> availableIngredients = new HashMap<>();
         for (Item item : server.getDataManager().getProductionDBSource().getAllItem()) {
             UUID itemStackId = item.getItemStackID();
@@ -71,11 +76,10 @@ public class GetAllProductsHandler extends AbstractHandler {
      * @param availableIngredients Map of available ingredients
      * @return The maximum number of products that can be made
      */
-    private int calculateAvailableProductCount(Product product, Map<UUID, Float> availableIngredients) {
+    private synchronized int calculateAvailableProductCount(Product product, Map<UUID, Float> availableIngredients) {
         if (product.getRecipe() == null || product.getRecipe().isEmpty()) {
             return Integer.MAX_VALUE; // No ingredients needed
         }
-        
         // Calculate maximum count for each ingredient
         int minAvailable = Integer.MAX_VALUE;
         for (Ingredient ingredient : product.getRecipe()) {

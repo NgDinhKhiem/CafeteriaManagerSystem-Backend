@@ -41,10 +41,28 @@ public class OrderResponse extends AbstractResponse {
         this.paymentTimestamp = order.getPaymentTimestamp();
         this.readyTimestamp = order.getReadyTimestamp();
         this.preparedBy = order.getPreparedBy();
+
         UserInformation userInformation = source.getUserInformation(order.getUserID());
         if(userInformation!=null){
-            this.preparedBy = userInformation.getUsername();
-        }else this.preparedBy = "null";
+            this.userID = userInformation.getUsername();
+        }else this.userID = "null";
+        double sum = 0;
+        for (OrderItem item : order.getItems()) {
+            sum += item.getPriceAtOrder()*item.getQuantity();
+        }
+        this.total = sum;
+    }
+
+    public OrderResponse(Order order) {
+        this.tableID = order.getTableID();
+        this.orderID = order.getOrderID();
+        this.items = order.getItems();
+        this.orderTimestamp = order.getOrderTimestamp();
+        this.status = order.getStatus();
+        this.userID = order.getUserID();
+        this.paymentTimestamp = order.getPaymentTimestamp();
+        this.readyTimestamp = order.getReadyTimestamp();
+        this.preparedBy = order.getPreparedBy();
         double sum = 0;
         for (OrderItem item : order.getItems()) {
             sum += item.getPriceAtOrder()*item.getQuantity();

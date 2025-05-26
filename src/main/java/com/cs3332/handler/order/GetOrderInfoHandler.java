@@ -34,8 +34,7 @@ public class GetOrderInfoHandler extends AbstractHandler {
         }
 
         OrderResponse response = new OrderResponse(
-               order,
-                server.getDataManager().getAuthenticationSource()
+               order
         );
 
         return new ServerResponse(ResponseCode.FOUND, response);

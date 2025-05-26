@@ -33,8 +33,8 @@ public class ItemInfoHandler extends AbstractBodyHandler<ItemInfoPayload> {
                             item.getImportExportDate(),
                             item.getExpiration_date(),
                             item.getQuantity(),
-                            item.getSupplier(),
-                            item.getReason()));
+                            item.getReason(),
+                            item.getSupplier()));
         } else {
             return new ServerResponse(ResponseCode.NOT_FOUND, new ErrorResponse("Item not found"));
         }
