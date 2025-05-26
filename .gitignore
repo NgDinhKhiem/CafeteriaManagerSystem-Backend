@@ -43,3 +43,4 @@ production-data.json
 APIS_V2.har
 CS3332_FinalReport.pdf
 .idea/misc.xml
+.env
